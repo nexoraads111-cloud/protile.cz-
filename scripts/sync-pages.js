@@ -46,8 +46,7 @@ if (existsSync(join(dist, 'photos'))) copy(join(dist, 'photos'), join('docs', 'p
 if (existsSync(join(dist, 'favicon.svg'))) copy(join(dist, 'favicon.svg'), join('docs', 'favicon.svg'))
 writeFileSync(join('docs', '.nojekyll'), '')
 if (existsSync(join('docs', 'index.dev.html'))) rmSync(join('docs', 'index.dev.html'))
-// No custom domain — serve from nexoraads111-cloud.github.io/protile.cz/
-if (existsSync(join('docs', 'CNAME'))) rmSync(join('docs', 'CNAME'))
+writeFileSync(join('docs', 'CNAME'), 'protile.cz\n')
 
 // root publish for current Pages source (main /)
 copy(normalizedHtml, 'index.html')
@@ -61,7 +60,7 @@ if (existsSync('recenze-stav.html')) {
   copy('recenze-stav.html', join('docs', 'recenze-stav.html'))
 }
 writeFileSync('.nojekyll', '')
-if (existsSync('CNAME')) rmSync('CNAME')
+writeFileSync('CNAME', 'protile.cz\n')
 
 // Marketing page: React Realizace owns the unified gallery (no separate «Nahrané» block).
 // Inject supabase-config.js BEFORE the Vite module so runtime fallback can read
