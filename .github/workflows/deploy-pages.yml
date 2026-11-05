@@ -1,0 +1,67 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Prepare Supabase config + Vite env (optional)
+        env:
+          URL: ${{ secrets.VITE_SUPABASE_URL }}
+          KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+        run: |
+          set -euo pipefail
+          if [ -n "${URL:-}" ] && [ -n "${KEY:-}" ]; then
+            cat > js/supabase-config.js <<EOFCONFIG
+          window.PROTILE_SUPABASE = {
+            url: '$URL',
+            anonKey: '$KEY',
+          }
+          EOFCONFIG
+            {
+              echo "VITE_SUPABASE_URL=$URL"
+              echo "VITE_SUPABASE_ANON_KEY=$KEY"
+            } > .env.production
+            echo "Wrote Supabase config from secrets"
+          else
+            echo "No Supabase secrets — building with local gallery + static reviews"
+            rm -f .env.production
+          fi
+      - run: npm run build
+      - name: Stage Pages artifact (repo root style)
+        run: |
+          mkdir -p _site
+          cp -a index.html admin.html favicon.svg CNAME .nojekyll assets photos css js supabase VANILLA-GALLERY.md recenze-stav.html _site/ 2>/dev/null || true
+          cp -a docs/. _site/ 2>/dev/null || true
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
