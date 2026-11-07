@@ -37,8 +37,8 @@ export default function Contact() {
         <div className="contact__grid contact__grid--form">
           <div className="contact__intro">
             <p className="section-eyebrow section-eyebrow--gold">Kontakt</p>
-            <h2 className="section-title section-title--light">
-              Máte projekt? <em>Ozvěte se nám</em>
+            <h2 className="section-title">
+              Máte projekt? <em>Napište nám</em>
             </h2>
             <p className="contact__lead">
               Domluvíme nezávaznou konzultaci, prohlédneme si prostor a připravíme férovou nabídku
@@ -130,14 +130,16 @@ export default function Contact() {
             </p>
           </div>
           <nav className="contact__footer-nav" aria-label="Patička">
-            {['Domov', 'Služby', 'Realizace', 'O nás', 'Recenze', 'Kontakt'].map((label, i) => {
-              const ids = ['domu', 'sluzby', 'realizace', 'o-nas', 'recenze', 'kontakt']
-              return (
-                <a key={label} href={`#${ids[i]}`}>
-                  {label}
-                </a>
-              )
-            })}
+            {['Domov', 'O nás', 'Služby', 'Realizace', 'Postup', 'Recenze', 'Kontakt'].map(
+              (label, i) => {
+                const ids = ['domu', 'o-nas', 'sluzby', 'realizace', 'postup', 'recenze', 'kontakt']
+                return (
+                  <a key={label} href={`#${ids[i]}`}>
+                    {label}
+                  </a>
+                )
+              },
+            )}
           </nav>
         </div>
 

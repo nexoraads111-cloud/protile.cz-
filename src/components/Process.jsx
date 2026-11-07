@@ -29,19 +29,26 @@ export default function Process() {
   return (
     <section id="postup" className="process section" ref={ref}>
       <div className="container">
-        <header className={`section-head section-head--center ${inView ? 'is-visible' : ''}`}>
-          <p className="section-eyebrow section-eyebrow--gold">Náš postup</p>
-          <h2 className="section-title section-title--light">Jak spolupracujeme</h2>
+        <header className={`section-head section-head--split ${inView ? 'is-visible' : ''}`}>
+          <div>
+            <p className="section-eyebrow">Náš postup</p>
+            <h2 className="section-title">Od nabídky k předání</h2>
+          </div>
+          <p className="section-lead">
+            Jasný průběh spolupráce — víte, co se děje v každé fázi zakázky.
+          </p>
         </header>
 
-        <ol className={`process__track ${inView ? 'is-visible' : ''}`}>
+        <ol className={`process__rail ${inView ? 'is-visible' : ''}`}>
           {STEPS.map((step, i) => (
-            <li key={step.n} className="process__step" style={{ '--i': i }}>
-              <span className="process__num" aria-hidden="true">
+            <li key={step.n} className="process__item" style={{ '--i': i }}>
+              <span className="process__digit" aria-hidden="true">
                 {step.n}
               </span>
-              <h3>{step.title}</h3>
-              <p>{step.text}</p>
+              <div className="process__copy">
+                <h3>{step.title}</h3>
+                <p>{step.text}</p>
+              </div>
             </li>
           ))}
         </ol>

@@ -19,13 +19,13 @@ export default function Realizations() {
       <div className="container">
         <header className={`section-head section-head--split ${inView ? 'is-visible' : ''}`}>
           <div>
-            <p className="section-eyebrow section-eyebrow--gold">Realizace</p>
-            <h2 className="section-title section-title--light">
-              Naše <em>projekty</em>
+            <p className="section-eyebrow">Realizace</p>
+            <h2 className="section-title">
+              Hotové <em>projekty</em>
             </h2>
           </div>
-          <a href="#realizace" className="btn btn--outline-gold">
-            Zobrazit všechny projekty
+          <a href="#kontakt" className="text-link">
+            Domluvit prohlídku
             <span aria-hidden="true">→</span>
           </a>
         </header>
@@ -69,7 +69,7 @@ export default function Realizations() {
                 <button
                   key={item.id}
                   type="button"
-                  className="gallery-card"
+                  className={`gallery-card ${i === 0 ? 'gallery-card--feature' : ''}`}
                   style={{ '--i': i }}
                   onClick={() => openAt(fullIndex)}
                   aria-label={`Otevřít: ${item.title}`}

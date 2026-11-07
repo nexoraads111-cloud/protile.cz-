@@ -23,6 +23,17 @@ const SERVICES = [
   },
 ]
 
+const EXTRAS = [
+  'Hydroizolace podlah a stěn',
+  'Příprava a vyrovnání povrchů',
+  'Sprchové zóny s odtoky a spády',
+  'Spárování, silikonování a finální úpravy',
+  'Řezání, přizpůsobení a úprava rohů pod 45°',
+  'Demontáž staré dlažby a příprava podkladu',
+  'Pokládka mozaiky a dekorativní dlažby',
+  'Montáž velkoformátových desek',
+]
+
 export default function Services() {
   const [ref, inView] = useInView()
   const { openImage } = useLightbox()
@@ -32,21 +43,21 @@ export default function Services() {
       <div className="container">
         <header className={`section-head section-head--split ${inView ? 'is-visible' : ''}`}>
           <div>
-            <p className="section-eyebrow section-eyebrow--gold">Naše služby</p>
-            <h2 className="section-title section-title--light">Co vám nabízíme?</h2>
+            <p className="section-eyebrow">Naše služby</p>
+            <h2 className="section-title">Co pro vás děláme</h2>
           </div>
           <p className="section-lead">
             Specializujeme se na profesionální pokládku dlaždic a komplexní dokončovací práce.
-            Používáme moderní materiály a ověřené technologie.
+            Moderní materiály, ověřené technologie, čistý výsledek.
           </p>
         </header>
 
-        <div className={`services__grid services__grid--three ${inView ? 'is-visible' : ''}`}>
+        <div className={`services__rows ${inView ? 'is-visible' : ''}`}>
           {SERVICES.map((service, i) => (
-            <article key={service.title} className="service-card" style={{ '--i': i }}>
+            <article key={service.title} className="service-row" style={{ '--i': i }}>
               <button
                 type="button"
-                className="service-card__media"
+                className="service-row__media"
                 onClick={() => openImage(service.image)}
                 aria-label={`${service.title} — otevřít fotografii`}
               >
@@ -55,19 +66,23 @@ export default function Services() {
                   alt={service.title}
                   loading="lazy"
                   decoding="async"
-                  width={480}
-                  height={600}
-                  sizes="(max-width: 720px) 100vw, (max-width: 1100px) 50vw, 33vw"
+                  width={640}
+                  height={420}
+                  sizes="(max-width: 900px) 100vw, 42vw"
                 />
               </button>
-              <div className="service-card__body">
-                <span className="service-card__icon" aria-hidden="true">
+              <div className="service-row__body">
+                <span className="service-row__index" aria-hidden="true">
+                  {String(i + 1).padStart(2, '0')}
+                </span>
+                <span className="service-row__icon" aria-hidden="true">
                   <ServiceIcon type={service.icon} />
                 </span>
                 <h3>{service.title}</h3>
                 <p>{service.text}</p>
-                <a href="#kontakt" className="service-card__arrow" aria-label="Kontaktovat">
-                  →
+                <a href="#kontakt" className="text-link">
+                  Poptat službu
+                  <span aria-hidden="true">→</span>
                 </a>
               </div>
             </article>
@@ -75,16 +90,7 @@ export default function Services() {
         </div>
 
         <ul className={`services__list ${inView ? 'is-visible' : ''}`}>
-          {[
-            'Hydroizolace podlah a stěn',
-            'Příprava a vyrovnání povrchů',
-            'Sprchové zóny s odtoky a spády',
-            'Spárování, silikonování a finální úpravy',
-            'Řezání, přizpůsobení a úprava rohů pod 45°',
-            'Demontáž staré dlažby a příprava podkladu',
-            'Pokládka mozaiky a dekorativní dlažby',
-            'Montáž velkoformátových desek',
-          ].map((item) => (
+          {EXTRAS.map((item) => (
             <li key={item}>
               <span aria-hidden="true">✓</span>
               {item}

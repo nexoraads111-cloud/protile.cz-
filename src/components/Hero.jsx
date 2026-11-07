@@ -18,19 +18,19 @@ export default function Hero() {
           />
         </picture>
         <div className="hero__overlay" />
-        <div className="hero__grain" />
+        <div className="hero__grid" />
       </div>
 
       <div className="hero__content container">
         <p className="hero__brand reveal reveal--1">{company.shortName}</p>
         <h1 className="hero__title reveal reveal--2">
-          Pokládáme precizně.
+          Precizní obklady.
           <br />
-          Dokončujeme na míru.
+          Dokončení na míru.
         </h1>
         <p className="hero__lead reveal reveal--3">
-          Profesionální pokládka obkladů a dlažeb a komplexní dokončovací práce v Česku —
-          moderní materiály, přesná práce a spolehlivý výsledek.
+          Profesionální pokládka obkladů a dlažeb i komplexní dokončovací práce —
+          Praha, okolí a zakázky po celé České republice.
         </p>
 
         <div className="hero__actions reveal reveal--4">
@@ -39,7 +39,7 @@ export default function Hero() {
             <span aria-hidden="true">→</span>
           </a>
           <a href="#kontakt" className="btn btn--ghost btn--lg">
-            Kontaktujte nás
+            Nezávazná poptávka
           </a>
         </div>
       </div>

@@ -2,23 +2,23 @@ import { useInView } from '../hooks/useInView'
 
 const ITEMS = [
   {
-    title: '+150 spokojených zákazníků',
-    text: 'Dokončené zakázky po celé ČR',
+    title: '+150',
+    text: 'Spokojených zákazníků',
     icon: 'home',
   },
   {
-    title: 'Zkušený tým',
-    text: 'Specialisté na obklady a dlažby',
+    title: 'Praha + ČR',
+    text: 'Zakázky po celé republice',
     icon: 'helmet',
   },
   {
-    title: '100% kvalita práce',
-    text: 'Precizní detaily a čisté spáry',
+    title: '100%',
+    text: 'Důraz na kvalitu detailu',
     icon: 'trophy',
   },
   {
-    title: 'Spolehlivost',
-    text: 'Termíny a férová komunikace',
+    title: 'Termíny',
+    text: 'Spolehlivá komunikace',
     icon: 'handshake',
   },
 ]

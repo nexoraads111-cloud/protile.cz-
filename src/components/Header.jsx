@@ -4,6 +4,7 @@ import { company } from '../company'
 
 const NAV = [
   { id: 'domu', label: 'Domov' },
+  { id: 'o-nas', label: 'O nás' },
   {
     id: 'sluzby',
     label: 'Služby',
@@ -15,7 +16,7 @@ const NAV = [
     ],
   },
   { id: 'realizace', label: 'Realizace' },
-  { id: 'o-nas', label: 'O nás' },
+  { id: 'postup', label: 'Postup' },
   { id: 'recenze', label: 'Recenze' },
   { id: 'kontakt', label: 'Kontakt' },
 ]
@@ -32,7 +33,7 @@ export default function Header() {
   useEffect(() => {
     const onScroll = () => {
       setScrolled(window.scrollY > 20)
-      const sections = ['domu', 'sluzby', 'realizace', 'o-nas', 'postup', 'recenze', 'kontakt']
+      const sections = ['domu', 'o-nas', 'sluzby', 'realizace', 'postup', 'recenze', 'kontakt']
         .map((id) => document.getElementById(id))
         .filter(Boolean)
       const y = window.scrollY + 110

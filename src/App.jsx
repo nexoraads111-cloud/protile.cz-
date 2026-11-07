@@ -1,8 +1,8 @@
 import Header from './components/Header'
 import Hero from './components/Hero'
 import TrustBar from './components/TrustBar'
-import Services from './components/Services'
 import About from './components/About'
+import Services from './components/Services'
 import Realizations from './components/Realizations'
 import Process from './components/Process'
 import Reviews from './components/Reviews'
@@ -19,8 +19,8 @@ export default function App() {
         <main>
           <Hero />
           <TrustBar />
-          <Services />
           <About />
+          <Services />
           <Realizations />
           <Process />
           <Reviews />

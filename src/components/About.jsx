@@ -15,33 +15,8 @@ export default function About() {
   const { openImage } = useLightbox()
 
   return (
-    <section id="o-nas" className="about section section--dark" ref={ref}>
-      <div className={`container about__inner ${inView ? 'is-visible' : ''}`}>
-        <div className="about__copy">
-          <p className="section-eyebrow section-eyebrow--gold">O nás</p>
-          <h2 className="section-title section-title--light">
-            Specialisté na <em>obklady a dokončení</em>
-          </h2>
-          <p className="about__text">
-            Naše společnost se specializuje na profesionální pokládku dlaždic a komplexní
-            dokončovací práce v České republice. Nabízíme kvalitní služby s využitím moderních
-            materiálů a technologií — od přípravy podkladu přes hydroizolaci až po finální
-            spárování.
-          </p>
-          <ul className="about__points">
-            {POINTS.map((p) => (
-              <li key={p}>
-                <span aria-hidden="true">✓</span>
-                {p}
-              </li>
-            ))}
-          </ul>
-          <a href="#kontakt" className="btn btn--primary">
-            Více o nás
-            <span aria-hidden="true">→</span>
-          </a>
-        </div>
-
+    <section id="o-nas" className="about section" ref={ref}>
+      <div className={`container about__inner about__inner--media-first ${inView ? 'is-visible' : ''}`}>
         <button
           type="button"
           className="about__photo"
@@ -57,6 +32,30 @@ export default function About() {
             height={720}
           />
         </button>
+
+        <div className="about__copy">
+          <p className="section-eyebrow">O nás</p>
+          <h2 className="section-title">
+            Partner pro <em>obklady a dokončení</em>
+          </h2>
+          <p className="about__text">
+            {company.shortName} se specializuje na profesionální pokládku dlaždic a komplexní
+            dokončovací práce. Od přípravy podkladu přes hydroizolaci až po finální spárování —
+            precizní detaily a spolehlivý výsledek.
+          </p>
+          <ul className="about__points">
+            {POINTS.map((p) => (
+              <li key={p}>
+                <span aria-hidden="true">✓</span>
+                {p}
+              </li>
+            ))}
+          </ul>
+          <a href="#realizace" className="btn btn--ghost">
+            Prohlédnout realizace
+            <span aria-hidden="true">→</span>
+          </a>
+        </div>
       </div>
     </section>
   )

@@ -159,14 +159,16 @@ export default function Reviews() {
   return (
     <section id="recenze" className="reviews section section--dark" ref={ref}>
       <div className="container">
-        <header className={`section-head ${inView ? 'is-visible' : ''}`}>
-          <p className="section-eyebrow section-eyebrow--gold">RECENZE</p>
-          <h2 className="section-title section-title--light">
-            Co říkají <em>zákazníci</em>
-          </h2>
+        <header className={`section-head section-head--split ${inView ? 'is-visible' : ''}`}>
+          <div>
+            <p className="section-eyebrow">Recenze</p>
+            <h2 className="section-title">
+              Hlasy <em>klientů</em>
+            </h2>
+          </div>
           <p className="reviews__lead">
-            Přečtěte si zkušenosti klientů. Chcete přidat vlastní? Nechte nám recenzi — před
-            zveřejněním ji schválíme.
+            Zkušenosti z dokončených zakázek. Chcete přidat vlastní? Recenzi před zveřejněním
+            schválíme.
           </p>
         </header>
 
