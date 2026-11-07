@@ -11,19 +11,21 @@ export default function Hero() {
             src={photos.heroJpg}
             alt=""
             className="hero__img"
-            width={1782}
-            height={1094}
+            width={1844}
+            height={1086}
             fetchPriority="high"
             decoding="async"
           />
         </picture>
       </div>
 
-      <div className="hero__shade" aria-hidden="true" />
+      <div className="hero__panel" aria-hidden="true">
+        <div className="hero__texture" />
+      </div>
 
       <div className="hero__content container">
         <p className="hero__brand reveal reveal--1">
-          <span>{company.shortName}</span>
+          <span>{company.shortName.toUpperCase()}</span>
           <span className="hero__brand-line" />
         </p>
         <h1 className="hero__title reveal reveal--2">

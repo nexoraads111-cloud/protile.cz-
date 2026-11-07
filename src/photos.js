@@ -99,6 +99,7 @@ export const gallery = [
 export const photos = {
   hero: '/photos/hero-bathroom.webp',
   heroJpg: '/photos/hero-bathroom.jpg',
+  heroTexture: '/photos/hero-texture.webp',
   about: '/photos/bath-01-wide.webp',
   contactBg: '/photos/tiling-09-stone-corner.webp',
   services: {

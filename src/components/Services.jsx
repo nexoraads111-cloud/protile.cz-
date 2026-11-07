@@ -3,18 +3,9 @@ import { photos } from '../photos'
 import { useLightbox } from '../lightbox-context'
 
 const SERVICES = [
-  {
-    title: 'Obklady a dlažby',
-    image: photos.services.tiles,
-  },
-  {
-    title: 'Koupelny',
-    image: photos.services.bathroom,
-  },
-  {
-    title: 'Terasy a schody',
-    image: photos.services.stairs,
-  },
+  { title: 'Obklady a dlažby', image: photos.services.tiles },
+  { title: 'Koupelny', image: photos.services.bathroom },
+  { title: 'Terasy a schody', image: photos.services.stairs },
 ]
 
 export default function Services() {
@@ -44,9 +35,9 @@ export default function Services() {
                 alt={service.title}
                 loading="lazy"
                 decoding="async"
-                width={876}
-                height={398}
-                sizes="(max-width: 720px) 100vw, 33vw"
+                width={870}
+                height={382}
+                sizes="(max-width: 860px) 100vw, 33vw"
               />
               <span className="service-tile__shade" aria-hidden="true" />
               <span className="service-tile__label">
