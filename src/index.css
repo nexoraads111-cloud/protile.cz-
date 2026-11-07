@@ -560,8 +560,8 @@ html.nav-open body {
   inset: 0;
   z-index: 1;
   pointer-events: none;
-  /* Measured: edge ~44% at top → ~50% at bottom (slants down-right) */
-  clip-path: polygon(0 0, 45% 0, 51% 100%, 0 100%);
+  /* Keep copy inside dark pane; shallow lean matching mockup */
+  clip-path: polygon(0 0, 52% 0, 46% 100%, 0 100%);
 }
 
 .hero__texture {
@@ -611,7 +611,7 @@ html.nav-open body {
 .hero__content {
   position: relative;
   z-index: 2;
-  max-width: 32rem;
+  max-width: 28rem;
 }
 
 .hero__brand {
@@ -738,7 +738,7 @@ html.nav-open body {
   padding: 0;
   overflow: hidden;
   border-radius: var(--radius);
-  aspect-ratio: 16 / 10;
+  aspect-ratio: 2.2 / 1;
   background: #2b2b2b;
   opacity: 0;
   transform: translateY(18px);
@@ -797,7 +797,7 @@ html.nav-open body {
   }
 
   .service-tile {
-    aspect-ratio: 16 / 10;
+    aspect-ratio: 2.2 / 1;
   }
 }
 
