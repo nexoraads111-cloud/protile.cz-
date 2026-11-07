@@ -1,12 +1,10 @@
 import Header from './components/Header'
 import Hero from './components/Hero'
-import Services from './components/Services'
-import TrustBar from './components/TrustBar'
-import About from './components/About'
-import Realizations from './components/Realizations'
-import Process from './components/Process'
+import WhyUs from './components/WhyUs'
+import Projects from './components/Projects'
+import CtaBand from './components/CtaBand'
 import Reviews from './components/Reviews'
-import Contact from './components/Contact'
+import Footer from './components/Footer'
 import Lightbox from './components/Lightbox'
 import { GalleryProvider } from './gallery-context'
 import { LightboxProvider } from './lightbox-context'
@@ -18,14 +16,12 @@ export default function App() {
         <Header />
         <main>
           <Hero />
-          <Services />
-          <TrustBar />
-          <About />
-          <Realizations />
-          <Process />
+          <WhyUs />
+          <Projects />
+          <CtaBand />
           <Reviews />
         </main>
-        <Contact />
+        <Footer />
         <Lightbox />
       </LightboxProvider>
     </GalleryProvider>

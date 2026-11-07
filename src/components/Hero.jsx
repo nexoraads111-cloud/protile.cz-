@@ -21,29 +21,47 @@ export default function Hero() {
       </div>
 
       <div className="hero__content container">
-        <p className="hero__brand reveal reveal--1">
-          <span>{company.shortName.toUpperCase()}</span>
-          <span className="hero__brand-line" />
-        </p>
-        <h1 className="hero__title reveal reveal--2">
+        <h1 className="hero__title reveal reveal--1">
           Precizní obklady.
           <br />
           Dokončení na míru.
         </h1>
-        <p className="hero__lead reveal reveal--3">
-          Obklady, dlažby a dokončovací práce. Praha a celá Česká republika.
+        <p className="hero__lead reveal reveal--2">
+          Obklady, dlažby a dokončovací práce. {company.areaFull}.
         </p>
 
-        <div className="hero__actions reveal reveal--4">
-          <a href="#kontakt" className="btn btn--gold btn--lg">
-            Nezávazná poptávka
+        <div className="hero__actions reveal reveal--3">
+          <a href="#kontakt" className="btn btn--dark btn--pill btn--lg">
+            Spočítat poptávku
+            <span className="btn__arrow" aria-hidden="true">
+              →
+            </span>
           </a>
-          <a href="#realizace" className="btn btn--ghost btn--lg">
-            Naše realizace
-            <span aria-hidden="true">→</span>
+          <a href="#realizace" className="hero__video-link">
+            <span className="hero__play" aria-hidden="true">
+              ▶
+            </span>
+            Podívejte se na naše realizace
           </a>
         </div>
       </div>
+
+      <aside className="hero__chip container">
+        <div className="hero__chip-card">
+          <img
+            src={photos.services.bathroom}
+            alt=""
+            width={72}
+            height={56}
+            loading="lazy"
+            decoding="async"
+          />
+          <div>
+            <p>Individuální přístup ke každé zakázce</p>
+            <a href="#proc-my">Více detailů →</a>
+          </div>
+        </div>
+      </aside>
     </section>
   )
 }

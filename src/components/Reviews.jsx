@@ -157,14 +157,12 @@ export default function Reviews() {
   }
 
   return (
-    <section id="recenze" className="reviews section section--dark" ref={ref}>
+    <section id="recenze" className="reviews section" ref={ref}>
       <div className="container">
         <header className={`section-head section-head--split ${inView ? 'is-visible' : ''}`}>
           <div>
             <p className="section-eyebrow">Recenze</p>
-            <h2 className="section-title">
-              Hlasy <em>klientů</em>
-            </h2>
+            <h2 className="section-title">Hlasy klientů</h2>
           </div>
           <p className="reviews__lead">
             Zkušenosti z dokončených zakázek. Chcete přidat vlastní? Recenzi před zveřejněním
@@ -194,7 +192,7 @@ export default function Reviews() {
         <div className={`reviews__cta ${inView ? 'is-visible' : ''}`}>
           <button
             type="button"
-            className="btn btn--primary btn--lg"
+            className="btn btn--dark btn--pill btn--lg"
             onClick={openModal}
             disabled={!isSupabaseConfigured}
           >
@@ -298,7 +296,7 @@ export default function Reviews() {
                 <div className="review-modal__actions">
                   <button
                     type="submit"
-                    className="btn btn--primary"
+                    className="btn btn--dark btn--pill"
                     disabled={sending || !isSupabaseConfigured || formMsg?.tone === 'ok'}
                   >
                     {sending ? 'Odesílám…' : 'Odeslat recenzi'}
