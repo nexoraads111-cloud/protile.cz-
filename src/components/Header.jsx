@@ -5,19 +5,8 @@ import { company } from '../company'
 const NAV = [
   { id: 'domu', label: 'Domov' },
   { id: 'o-nas', label: 'O nás' },
-  {
-    id: 'sluzby',
-    label: 'Služby',
-    children: [
-      { href: '#sluzby', label: 'Pokládka obkladů' },
-      { href: '#sluzby', label: 'Koupelny a kuchyně' },
-      { href: '#sluzby', label: 'Terasy a schody' },
-      { href: '#sluzby', label: 'Hydroizolace a příprava' },
-    ],
-  },
+  { id: 'sluzby', label: 'Služby' },
   { id: 'realizace', label: 'Realizace' },
-  { id: 'postup', label: 'Postup' },
-  { id: 'recenze', label: 'Recenze' },
   { id: 'kontakt', label: 'Kontakt' },
 ]
 
@@ -27,15 +16,12 @@ export default function Header() {
   const [active, setActive] = useState('domu')
   const navId = useId()
   const toggleRef = useRef(null)
-  const panelRef = useRef(null)
   const firstLinkRef = useRef(null)
 
   useEffect(() => {
     const onScroll = () => {
       setScrolled(window.scrollY > 20)
-      const sections = ['domu', 'o-nas', 'sluzby', 'realizace', 'postup', 'recenze', 'kontakt']
-        .map((id) => document.getElementById(id))
-        .filter(Boolean)
+      const sections = NAV.map((item) => document.getElementById(item.id)).filter(Boolean)
       const y = window.scrollY + 110
       for (let i = sections.length - 1; i >= 0; i--) {
         if (sections[i].offsetTop <= y) {
@@ -84,30 +70,14 @@ export default function Header() {
           <nav className="site-nav" aria-label="Hlavní navigace">
             <ul className="site-nav__list">
               {NAV.map((item) => (
-                <li key={item.id} className={item.children ? 'has-dropdown' : undefined}>
+                <li key={item.id}>
                   <a
                     href={`#${item.id}`}
                     className={active === item.id ? 'is-active' : ''}
                     onClick={close}
                   >
                     {item.label}
-                    {item.children ? (
-                      <span className="nav-caret" aria-hidden="true">
-                        ▾
-                      </span>
-                    ) : null}
                   </a>
-                  {item.children ? (
-                    <ul className="site-nav__dropdown" aria-label="Služby">
-                      {item.children.map((child) => (
-                        <li key={child.label}>
-                          <a href={child.href} onClick={close}>
-                            {child.label}
-                          </a>
-                        </li>
-                      ))}
-                    </ul>
-                  ) : null}
                 </li>
               ))}
             </ul>
@@ -148,7 +118,6 @@ export default function Header() {
 
       <nav
         id={navId}
-        ref={panelRef}
         className={`mobile-nav ${open ? 'is-open' : ''}`}
         aria-label="Mobilní navigace"
         aria-hidden={!open}
@@ -175,8 +144,8 @@ export default function Header() {
           <a href={`mailto:${company.email}`} tabIndex={open ? 0 : -1}>
             {company.email}
           </a>
-          <a href="#kontakt" className="btn btn--primary" onClick={close} tabIndex={open ? 0 : -1}>
-            Kontaktujte nás →
+          <a href="#kontakt" className="btn btn--gold" onClick={close} tabIndex={open ? 0 : -1}>
+            Nezávazná poptávka
           </a>
         </div>
       </nav>

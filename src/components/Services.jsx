@@ -4,34 +4,17 @@ import { useLightbox } from '../lightbox-context'
 
 const SERVICES = [
   {
-    title: 'Pokládka obkladů a dlažeb',
-    text: 'Všechny druhy keramiky a keramogranitu — od mozaiky po velkoformátové desky, na podlahy i stěny.',
+    title: 'Obklady a dlažby',
     image: photos.services.tiles,
-    icon: 'tile',
   },
   {
-    title: 'Koupelny, sprchy a kuchyně',
-    text: 'Obklady koupelen, sprchových koutů, kuchyní a sanitárních prostor včetně spádů a detailů.',
+    title: 'Koupelny',
     image: photos.services.bathroom,
-    icon: 'bath',
   },
   {
-    title: 'Terasy, balkony a schody',
-    text: 'Exteriérové dlažby a schodiště — trvanlivé řešení odolné vůči povětrnostním vlivům.',
+    title: 'Terasy a schody',
     image: photos.services.stairs,
-    icon: 'stairs',
   },
-]
-
-const EXTRAS = [
-  'Hydroizolace podlah a stěn',
-  'Příprava a vyrovnání povrchů',
-  'Sprchové zóny s odtoky a spády',
-  'Spárování, silikonování a finální úpravy',
-  'Řezání, přizpůsobení a úprava rohů pod 45°',
-  'Demontáž staré dlažby a příprava podkladu',
-  'Pokládka mozaiky a dekorativní dlažby',
-  'Montáž velkoformátových desek',
 ]
 
 export default function Services() {
@@ -39,102 +22,43 @@ export default function Services() {
   const { openImage } = useLightbox()
 
   return (
-    <section id="sluzby" className="services section section--dark" ref={ref}>
+    <section id="sluzby" className="services section section--cream" ref={ref}>
       <div className="container">
-        <header className={`section-head section-head--split ${inView ? 'is-visible' : ''}`}>
-          <div>
-            <p className="section-eyebrow">Naše služby</p>
-            <h2 className="section-title">Co pro vás děláme</h2>
-          </div>
-          <p className="section-lead">
-            Specializujeme se na profesionální pokládku dlaždic a komplexní dokončovací práce.
-            Moderní materiály, ověřené technologie, čistý výsledek.
-          </p>
+        <header className={`services__intro ${inView ? 'is-visible' : ''}`}>
+          <span className="services__rule" aria-hidden="true" />
+          <h2 className="services__heading">Řemeslo, které je vidět.</h2>
         </header>
 
-        <div className={`services__rows ${inView ? 'is-visible' : ''}`}>
+        <div className={`services__cards ${inView ? 'is-visible' : ''}`}>
           {SERVICES.map((service, i) => (
-            <article key={service.title} className="service-row" style={{ '--i': i }}>
-              <button
-                type="button"
-                className="service-row__media"
-                onClick={() => openImage(service.image)}
-                aria-label={`${service.title} — otevřít fotografii`}
-              >
-                <img
-                  src={service.image}
-                  alt={service.title}
-                  loading="lazy"
-                  decoding="async"
-                  width={640}
-                  height={420}
-                  sizes="(max-width: 900px) 100vw, 42vw"
-                />
-              </button>
-              <div className="service-row__body">
-                <span className="service-row__index" aria-hidden="true">
-                  {String(i + 1).padStart(2, '0')}
+            <button
+              key={service.title}
+              type="button"
+              className="service-tile"
+              style={{ '--i': i }}
+              onClick={() => openImage(service.image)}
+              aria-label={`${service.title} — otevřít fotografii`}
+            >
+              <img
+                src={service.image}
+                alt={service.title}
+                loading="lazy"
+                decoding="async"
+                width={876}
+                height={398}
+                sizes="(max-width: 720px) 100vw, 33vw"
+              />
+              <span className="service-tile__shade" aria-hidden="true" />
+              <span className="service-tile__label">
+                <span>{service.title}</span>
+                <span className="service-tile__arrow" aria-hidden="true">
+                  →
                 </span>
-                <span className="service-row__icon" aria-hidden="true">
-                  <ServiceIcon type={service.icon} />
-                </span>
-                <h3>{service.title}</h3>
-                <p>{service.text}</p>
-                <a href="#kontakt" className="text-link">
-                  Poptat službu
-                  <span aria-hidden="true">→</span>
-                </a>
-              </div>
-            </article>
+              </span>
+            </button>
           ))}
         </div>
-
-        <ul className={`services__list ${inView ? 'is-visible' : ''}`}>
-          {EXTRAS.map((item) => (
-            <li key={item}>
-              <span aria-hidden="true">✓</span>
-              {item}
-            </li>
-          ))}
-        </ul>
       </div>
     </section>
-  )
-}
-
-function ServiceIcon({ type }) {
-  const props = { width: 22, height: 22, viewBox: '0 0 24 24', fill: 'none', 'aria-hidden': true }
-  if (type === 'bath') {
-    return (
-      <svg {...props}>
-        <path
-          d="M5 12h14v3a4 4 0 0 1-4 4H9a4 4 0 0 1-4-4v-3zm2-2V7a3 3 0 0 1 3-3h0"
-          stroke="currentColor"
-          strokeWidth="1.6"
-          strokeLinecap="round"
-        />
-      </svg>
-    )
-  }
-  if (type === 'stairs') {
-    return (
-      <svg {...props}>
-        <path
-          d="M4 19h4v-4h4v-4h4V7h4"
-          stroke="currentColor"
-          strokeWidth="1.6"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-      </svg>
-    )
-  }
-  return (
-    <svg {...props}>
-      <rect x="3" y="3" width="8" height="8" rx="1" stroke="currentColor" strokeWidth="1.6" />
-      <rect x="13" y="3" width="8" height="8" rx="1" stroke="currentColor" strokeWidth="1.6" />
-      <rect x="3" y="13" width="8" height="8" rx="1" stroke="currentColor" strokeWidth="1.6" />
-      <rect x="13" y="13" width="8" height="8" rx="1" stroke="currentColor" strokeWidth="1.6" />
-    </svg>
   )
 }

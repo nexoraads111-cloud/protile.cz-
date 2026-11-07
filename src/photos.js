@@ -97,15 +97,15 @@ export const gallery = [
 ]
 
 export const photos = {
-  hero: '/photos/cool-house.webp',
-  heroJpg: '/photos/cool-house.jpg',
+  hero: '/photos/hero-bathroom.webp',
+  heroJpg: '/photos/hero-bathroom.jpg',
   about: '/photos/bath-01-wide.webp',
   contactBg: '/photos/tiling-09-stone-corner.webp',
   services: {
-    tiles: '/photos/tiling-04-hallway.webp',
-    bathroom: '/photos/bath-02-doorway.webp',
+    tiles: '/photos/mockup-tiles.webp',
+    bathroom: '/photos/mockup-bath.webp',
+    stairs: '/photos/mockup-stairs.webp',
     facade: '/photos/tiling-09-stone-corner.webp',
-    stairs: '/photos/tiling-01-stairs-up.webp',
   },
   realizations: gallery,
 }

@@ -105,7 +105,7 @@ export default function Contact() {
                 placeholder="Popište prostor, typ obkladů nebo termín…"
               />
             </label>
-            <button type="submit" className="btn btn--primary btn--lg contact-form__submit">
+            <button type="submit" className="btn btn--gold btn--lg contact-form__submit">
               Odeslat zprávu
               <span aria-hidden="true">→</span>
             </button>
@@ -130,16 +130,14 @@ export default function Contact() {
             </p>
           </div>
           <nav className="contact__footer-nav" aria-label="Patička">
-            {['Domov', 'O nás', 'Služby', 'Realizace', 'Postup', 'Recenze', 'Kontakt'].map(
-              (label, i) => {
-                const ids = ['domu', 'o-nas', 'sluzby', 'realizace', 'postup', 'recenze', 'kontakt']
-                return (
-                  <a key={label} href={`#${ids[i]}`}>
-                    {label}
-                  </a>
-                )
-              },
-            )}
+            {['Domov', 'O nás', 'Služby', 'Realizace', 'Kontakt'].map((label, i) => {
+              const ids = ['domu', 'o-nas', 'sluzby', 'realizace', 'kontakt']
+              return (
+                <a key={label} href={`#${ids[i]}`}>
+                  {label}
+                </a>
+              )
+            })}
           </nav>
         </div>
 

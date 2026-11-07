@@ -11,35 +11,37 @@ export default function Hero() {
             src={photos.heroJpg}
             alt=""
             className="hero__img"
-            width={1280}
-            height={720}
+            width={1782}
+            height={1094}
             fetchPriority="high"
             decoding="async"
           />
         </picture>
-        <div className="hero__overlay" />
-        <div className="hero__grid" />
       </div>
 
+      <div className="hero__shade" aria-hidden="true" />
+
       <div className="hero__content container">
-        <p className="hero__brand reveal reveal--1">{company.shortName}</p>
+        <p className="hero__brand reveal reveal--1">
+          <span>{company.shortName}</span>
+          <span className="hero__brand-line" />
+        </p>
         <h1 className="hero__title reveal reveal--2">
           Precizní obklady.
           <br />
           Dokončení na míru.
         </h1>
         <p className="hero__lead reveal reveal--3">
-          Profesionální pokládka obkladů a dlažeb i komplexní dokončovací práce —
-          Praha, okolí a zakázky po celé České republice.
+          Obklady, dlažby a dokončovací práce. Praha a celá Česká republika.
         </p>
 
         <div className="hero__actions reveal reveal--4">
-          <a href="#sluzby" className="btn btn--primary btn--lg">
-            Naše služby
-            <span aria-hidden="true">→</span>
-          </a>
-          <a href="#kontakt" className="btn btn--ghost btn--lg">
+          <a href="#kontakt" className="btn btn--gold btn--lg">
             Nezávazná poptávka
+          </a>
+          <a href="#realizace" className="btn btn--ghost btn--lg">
+            Naše realizace
+            <span aria-hidden="true">→</span>
           </a>
         </div>
       </div>
