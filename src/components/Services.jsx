@@ -35,8 +35,8 @@ export default function Services() {
                 alt={service.title}
                 loading="lazy"
                 decoding="async"
-                width={870}
-                height={382}
+                width={892}
+                height={340}
                 sizes="(max-width: 860px) 100vw, 33vw"
               />
               <span className="service-tile__shade" aria-hidden="true" />
