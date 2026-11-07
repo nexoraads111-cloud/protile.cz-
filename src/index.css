@@ -514,16 +514,16 @@ html.nav-open body {
   }
 }
 
-/* Hero — first-viewport composition matching mockup */
+/* Hero — full-bleed soft photo, left-aligned copy (no dark slab) */
 .hero {
   position: relative;
-  /* Mockup first frame = header + hero + cream services */
-  min-height: clamp(390px, 52vh, 560px);
+  min-height: clamp(420px, 58vh, 640px);
   display: grid;
   align-items: center;
-  padding: calc(var(--header-h) + 0.85rem) 0 2.1rem;
+  justify-items: stretch;
+  padding: calc(var(--header-h) + 1.25rem) 0 2.5rem;
   overflow: hidden;
-  background: #1a1a1a;
+  background: #d8d2c8;
 }
 
 .hero__media {
@@ -536,82 +536,70 @@ html.nav-open body {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: 48% center;
-  transform: scale(1.08);
+  object-position: 55% center;
+  /* Soft / milky photo — gentle, not harsh */
+  filter: brightness(1.12) contrast(0.88) saturate(0.82);
+  transform: scale(1.04);
+}
+
+.hero__scrim {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  /* Soft readability wash only — photo stays dominant */
+  background:
+    linear-gradient(
+      90deg,
+      rgba(28, 24, 20, 0.55) 0%,
+      rgba(28, 24, 20, 0.32) 28%,
+      rgba(28, 24, 20, 0.12) 48%,
+      transparent 68%
+    ),
+    linear-gradient(180deg, rgba(255, 250, 242, 0.18) 0%, transparent 35%, rgba(20, 18, 16, 0.2) 100%);
 }
 
 @media (prefers-reduced-motion: no-preference) and (min-width: 900px) {
   .hero__img {
-    animation: heroZoom 26s var(--ease) infinite alternate;
+    animation: heroZoom 28s var(--ease) infinite alternate;
   }
 
   @keyframes heroZoom {
     from {
-      transform: scale(1.06);
+      transform: scale(1.03);
     }
     to {
-      transform: scale(1.12);
+      transform: scale(1.08);
     }
   }
-}
-
-.hero__panel {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  pointer-events: none;
-  /* Keep copy inside dark pane; shallow lean matching mockup */
-  clip-path: polygon(0 0, 52% 0, 46% 100%, 0 100%);
-}
-
-.hero__texture {
-  width: 100%;
-  height: 100%;
-  background-color: #1c1917;
-  background-image:
-    linear-gradient(100deg, rgba(10, 8, 7, 0.35) 0%, rgba(16, 14, 12, 0.18) 75%, transparent 100%),
-    url('/photos/hero-texture.webp');
-  background-size: cover, cover;
-  background-position: center, 30% center;
-  filter: contrast(1.35) brightness(0.95) saturate(0.55);
-}
-
-.hero__panel::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(90deg, transparent 78%, rgba(0, 0, 0, 0.22));
-  box-shadow: inset -18px 0 36px rgba(0, 0, 0, 0.25);
-  pointer-events: none;
 }
 
 @media (max-width: 799px) {
-  .hero__panel {
-    clip-path: none;
-  }
-
-  .hero__texture {
-    background-image:
-      linear-gradient(180deg, rgba(20, 20, 20, 0.45) 0%, rgba(20, 20, 20, 0.78) 55%, rgba(20, 20, 20, 0.9) 100%),
-      url('/photos/hero-texture.webp');
-    filter: saturate(0.7) brightness(0.4);
-  }
-
   .hero {
     align-items: end;
-    min-height: min(100svh, 700px);
+    min-height: min(100svh, 720px);
     padding-bottom: 2.75rem;
   }
 
   .hero__img {
     object-position: center;
   }
+
+  .hero__scrim {
+    background:
+      linear-gradient(180deg, rgba(28, 24, 20, 0.25) 0%, rgba(28, 24, 20, 0.45) 45%, rgba(28, 24, 20, 0.62) 100%),
+      linear-gradient(90deg, rgba(28, 24, 20, 0.35) 0%, transparent 70%);
+  }
 }
 
 .hero__content {
   position: relative;
   z-index: 2;
-  max-width: 28rem;
+  max-width: 34rem;
+  width: 100%;
+  margin-inline: 0;
+  margin-right: auto;
+  text-align: left;
+  justify-self: start;
 }
 
 .hero__brand {
@@ -639,20 +627,23 @@ html.nav-open body {
   line-height: 1.05;
   letter-spacing: -0.022em;
   color: var(--white);
+  text-shadow: 0 1px 18px rgba(0, 0, 0, 0.25);
 }
 
 .hero__lead {
   margin-top: 1.15rem;
-  max-width: 26rem;
+  max-width: 28rem;
   font-size: 0.98rem;
   font-weight: 400;
   line-height: 1.5;
-  color: rgba(255, 255, 255, 0.86);
+  color: rgba(255, 255, 255, 0.92);
+  text-shadow: 0 1px 12px rgba(0, 0, 0, 0.22);
 }
 
 .hero__actions {
   display: flex;
   flex-wrap: wrap;
+  justify-content: flex-start;
   gap: 0.75rem;
   margin-top: 1.7rem;
 }
@@ -1675,6 +1666,6 @@ html.nav-open body {
     transition: none !important;
   }
   .hero__img {
-    transform: scale(1.08);
+    transform: scale(1.04);
   }
 }

@@ -17,10 +17,7 @@ export default function Hero() {
             decoding="async"
           />
         </picture>
-      </div>
-
-      <div className="hero__panel" aria-hidden="true">
-        <div className="hero__texture" />
+        <div className="hero__scrim" />
       </div>
 
       <div className="hero__content container">
