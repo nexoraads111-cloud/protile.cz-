@@ -2,7 +2,7 @@ import { useEffect, useId, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { useInView } from '../hooks/useInView'
 import { fetchApprovedReviews, submitReview } from '../lib/reviews-api'
-import { isSupabaseConfigured } from '../lib/supabase'
+import { getIsSupabaseConfigured } from '../lib/supabase'
 
 const FALLBACK_REVIEWS = [
   {
@@ -46,32 +46,41 @@ export default function Reviews() {
   const nameRef = useRef(null)
   const closeTimer = useRef(null)
 
-  const [items, setItems] = useState(isSupabaseConfigured ? [] : FALLBACK_REVIEWS)
-  const [loadState, setLoadState] = useState(isSupabaseConfigured ? 'loading' : 'fallback')
+  const configured = getIsSupabaseConfigured()
+  const [items, setItems] = useState(configured ? [] : FALLBACK_REVIEWS)
+  const [loadState, setLoadState] = useState(configured ? 'loading' : 'fallback')
   const [modalOpen, setModalOpen] = useState(false)
   const [fields, setFields] = useState(resetFormState)
   const [sending, setSending] = useState(false)
   const [formMsg, setFormMsg] = useState(null)
 
   useEffect(() => {
-    if (!isSupabaseConfigured) return
+    if (!getIsSupabaseConfigured()) return
     let cancelled = false
-    ;(async () => {
+    const load = async () => {
       try {
         const rows = await fetchApprovedReviews()
         if (!cancelled) {
-          setItems(rows.length ? rows : FALLBACK_REVIEWS)
-          setLoadState(rows.length ? 'ready' : 'fallback')
+          // When Supabase is live, never mask with static FALLBACK — approved
+          // reviews must appear after email Accept (even if the list was empty).
+          setItems(rows)
+          setLoadState(rows.length ? 'ready' : 'empty')
         }
       } catch {
         if (!cancelled) {
-          setItems(FALLBACK_REVIEWS)
-          setLoadState('fallback')
+          setItems([])
+          setLoadState('error')
         }
       }
-    })()
+    }
+    load()
+    const onVis = () => {
+      if (document.visibilityState === 'visible') load()
+    }
+    document.addEventListener('visibilitychange', onVis)
     return () => {
       cancelled = true
+      document.removeEventListener('visibilitychange', onVis)
     }
   }, [])
 
@@ -171,6 +180,12 @@ export default function Reviews() {
         </header>
 
         {loadState === 'loading' && <p className="gallery-status">Načítám recenze…</p>}
+        {loadState === 'empty' && (
+          <p className="gallery-status">Zatím žádné schválené recenze — budeme rádi za tu vaši.</p>
+        )}
+        {loadState === 'error' && (
+          <p className="gallery-status">Recenze se nepodařilo načíst. Zkuste obnovit stránku.</p>
+        )}
 
         {items.length > 0 && (
           <div className={`reviews__grid ${inView ? 'is-visible' : ''}`}>
@@ -194,12 +209,12 @@ export default function Reviews() {
             type="button"
             className="btn btn--dark btn--pill btn--lg"
             onClick={openModal}
-            disabled={!isSupabaseConfigured}
+            disabled={!configured}
           >
             Zanechat recenzi
           </button>
           <p className="reviews__hint">
-            {isSupabaseConfigured
+            {configured
               ? 'Recenzi před zveřejněním zkontrolujeme. Veřejně se zobrazí až po schválení.'
               : 'Online odesílání recenzí připravujeme — zatím nám napište na e-mail.'}
           </p>
@@ -297,7 +312,7 @@ export default function Reviews() {
                   <button
                     type="submit"
                     className="btn btn--dark btn--pill"
-                    disabled={sending || !isSupabaseConfigured || formMsg?.tone === 'ok'}
+                    disabled={sending || !configured || formMsg?.tone === 'ok'}
                   >
                     {sending ? 'Odesílám…' : 'Odeslat recenzi'}
                   </button>

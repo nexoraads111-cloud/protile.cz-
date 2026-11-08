@@ -3,6 +3,7 @@ import { createClient } from '@supabase/supabase-js'
 /**
  * Prefer Vite env (build-time). Fall back to window.PROTILE_SUPABASE
  * (or legacy DOSPRETON_SUPABASE) from js/supabase-config.js.
+ * Resolved lazily on first use so the config script can load first.
  */
 function readConfig() {
   const fromEnv = {
@@ -23,17 +24,62 @@ function readConfig() {
   return fromEnv
 }
 
-const { url, anonKey } = readConfig()
+let cached = null
 
-export const isSupabaseConfigured = Boolean(url && anonKey)
+function resolve() {
+  if (cached) return cached
+  const { url, anonKey } = readConfig()
+  cached = {
+    url,
+    anonKey,
+    configured: Boolean(url && anonKey),
+    client: url && anonKey ? createClient(url, anonKey) : null,
+  }
+  return cached
+}
 
-/** @type {import('@supabase/supabase-js').SupabaseClient | null} */
-export const db = isSupabaseConfigured ? createClient(url, anonKey) : null
+export function getSupabaseConfig() {
+  const { url, anonKey } = resolve()
+  return { url, anonKey }
+}
+
+export function getIsSupabaseConfigured() {
+  return resolve().configured
+}
+
+/** @deprecated Prefer getIsSupabaseConfigured() — evaluates lazily on first call via wrapper. */
+export function isSupabaseConfigured() {
+  return resolve().configured
+}
+
+/** Lazy client; null when not configured. */
+export function getDb() {
+  return resolve().client
+}
+
+/**
+ * Back-compat object used as `db.from(...)`.
+ * Throws if called while unconfigured.
+ */
+export const db = {
+  from(...args) {
+    const c = resolve().client
+    if (!c) throw new Error('Supabase není nakonfigurován.')
+    return c.from(...args)
+  },
+  get storage() {
+    return resolve().client?.storage
+  },
+  get auth() {
+    return resolve().client?.auth
+  },
+}
 
 export const GALLERY_BUCKET = 'gallery'
 
 export function publicGalleryUrl(storagePath) {
-  if (!db || !storagePath) return ''
-  const { data } = db.storage.from(GALLERY_BUCKET).getPublicUrl(storagePath)
+  const c = resolve().client
+  if (!c || !storagePath) return ''
+  const { data } = c.storage.from(GALLERY_BUCKET).getPublicUrl(storagePath)
   return data?.publicUrl || ''
 }
