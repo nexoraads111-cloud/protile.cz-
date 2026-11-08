@@ -95,7 +95,8 @@
         document.getElementById('title').textContent = info.title
         document.getElementById('message').textContent = info.message
         document.title = info.title + ' · ProTile CZ'
-        var target = site + '#recenze'
+        // Cache-bust so the SPA reloads approved rows after email Přijmout.
+        var target = site + '?recenze=' + Date.now() + '#recenze'
         document.getElementById('hint').innerHTML =
           'Přesměrování na <a href="' + target + '">Recenze</a> za 2&nbsp;s…'
         setTimeout(function () {

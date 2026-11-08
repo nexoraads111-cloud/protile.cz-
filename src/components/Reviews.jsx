@@ -61,8 +61,8 @@ export default function Reviews() {
       try {
         const rows = await fetchApprovedReviews()
         if (!cancelled) {
-          // When Supabase is live, never mask with static FALLBACK — approved
-          // reviews must appear after email Accept (even if the list was empty).
+          // Pending never listed here (RLS + status=approved filter).
+          // After email Přijmout, approved rows must appear — no static FALLBACK mask.
           setItems(rows)
           setLoadState(rows.length ? 'ready' : 'empty')
         }
@@ -74,13 +74,22 @@ export default function Reviews() {
       }
     }
     load()
-    const onVis = () => {
+    const maybeReload = () => {
       if (document.visibilityState === 'visible') load()
     }
-    document.addEventListener('visibilitychange', onVis)
+    const onHash = () => {
+      if (/^#recenze\b/i.test(location.hash || '')) load()
+    }
+    document.addEventListener('visibilitychange', maybeReload)
+    window.addEventListener('pageshow', maybeReload)
+    window.addEventListener('focus', maybeReload)
+    window.addEventListener('hashchange', onHash)
     return () => {
       cancelled = true
-      document.removeEventListener('visibilitychange', onVis)
+      document.removeEventListener('visibilitychange', maybeReload)
+      window.removeEventListener('pageshow', maybeReload)
+      window.removeEventListener('focus', maybeReload)
+      window.removeEventListener('hashchange', onHash)
     }
   }, [])
 
@@ -181,7 +190,10 @@ export default function Reviews() {
 
         {loadState === 'loading' && <p className="gallery-status">Načítám recenze…</p>}
         {loadState === 'empty' && (
-          <p className="gallery-status">Zatím žádné schválené recenze — budeme rádi za tu vaši.</p>
+          <p className="gallery-status">
+            Zatím žádné schválené recenze. Nové příspěvky jsou nejdřív ke kontrole e-mailem — po
+            kliknutí na Přijmout se zde zobrazí veřejně.
+          </p>
         )}
         {loadState === 'error' && (
           <p className="gallery-status">Recenze se nepodařilo načíst. Zkuste obnovit stránku.</p>
