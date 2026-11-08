@@ -1,9 +1,8 @@
 /**
  * Browser Supabase config (publishable / anon key only — NOT service_role).
- * Leave empty until a ProTile Supabase project is connected; the site falls
- * back to local gallery photos and static reviews.
+ * Baked for GitHub Pages because Actions secrets are unavailable to the agent (403).
  */
 window.PROTILE_SUPABASE = {
-  url: '',
-  anonKey: '',
+  url: 'https://vmqggaksvweiyhevgebs.supabase.co',
+  anonKey: 'sb_publishable_X9qS7Cq8zmRMw9j6lt2Zhg_3TSNWRGg',
 }
