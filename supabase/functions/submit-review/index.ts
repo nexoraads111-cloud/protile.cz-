@@ -2,10 +2,44 @@
  * POST /functions/v1/submit-review
  * Body: { author_name, body, rating? }
  * Inserts pending review + emails admin Accept/Reject links (Resend).
+ *
+ * Self-contained for Supabase Dashboard Editor deploy (no ../_shared imports).
  */
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.49.1'
-import { corsHeaders } from '../_shared/cors.ts'
-import { signAction } from '../_shared/tokens.ts'
+
+const corsHeaders: Record<string, string> = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+}
+
+const enc = new TextEncoder()
+
+function toHex(buf: ArrayBuffer): string {
+  return [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, '0')).join('')
+}
+
+async function importKey(secret: string): Promise<CryptoKey> {
+  return crypto.subtle.importKey(
+    'raw',
+    enc.encode(secret),
+    { name: 'HMAC', hash: 'SHA-256' },
+    false,
+    ['sign', 'verify'],
+  )
+}
+
+async function signAction(
+  secret: string,
+  id: string,
+  action: 'approve' | 'reject',
+  expUnix: number,
+): Promise<string> {
+  const key = await importKey(secret)
+  const data = enc.encode(`${id}:${action}:${expUnix}`)
+  const sig = await crypto.subtle.sign('HMAC', key, data)
+  return toHex(sig)
+}
 
 const TOKEN_TTL_SEC = 60 * 60 * 24 * 14 // 14 days
 

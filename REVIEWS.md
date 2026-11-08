@@ -12,9 +12,19 @@ Supabase → SQL Editor → run `supabase/reviews.sql`.
 
 ## 2. Edge Functions
 
-Deploy from repo (needs Supabase CLI + project login / `SUPABASE_ACCESS_TOKEN`):
+Each function is a **single self-contained** `index.ts` (CORS + HMAC inlined — no `_shared` imports). Safe for Dashboard Editor **or** CLI.
+
+### Option A — Dashboard Editor (no CLI)
+
+1. Open https://supabase.com/dashboard/project/vmqggaksvweiyhevgebs/functions  
+2. Create/open **`submit-review`** → paste entire `supabase/functions/submit-review/index.ts` → **Deploy**  
+3. Create/open **`review-action`** → paste entire `supabase/functions/review-action/index.ts` → **Deploy**  
+4. Confirm **Enforce JWT** is **off** for both (email Accept links open without a user session).
+
+### Option B — CLI (needs `SUPABASE_ACCESS_TOKEN`)
 
 ```bash
+export SUPABASE_ACCESS_TOKEN=sbp_…   # https://supabase.com/dashboard/account/tokens
 supabase functions deploy submit-review --project-ref vmqggaksvweiyhevgebs --no-verify-jwt
 supabase functions deploy review-action --project-ref vmqggaksvweiyhevgebs --no-verify-jwt
 ```

@@ -3,10 +3,63 @@
  * Verifies HMAC, updates review status, then 302-redirects to a static Czech
  * result page on the marketing site (Supabase gateway forces text/plain on
  * function bodies, so we cannot rely on inline HTML rendering in the browser).
+ *
+ * Self-contained for Supabase Dashboard Editor deploy (no ../_shared imports).
  */
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.49.1'
-import { corsHeaders } from '../_shared/cors.ts'
-import { verifyAction } from '../_shared/tokens.ts'
+
+const corsHeaders: Record<string, string> = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+}
+
+const enc = new TextEncoder()
+
+function toHex(buf: ArrayBuffer): string {
+  return [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, '0')).join('')
+}
+
+async function importKey(secret: string): Promise<CryptoKey> {
+  return crypto.subtle.importKey(
+    'raw',
+    enc.encode(secret),
+    { name: 'HMAC', hash: 'SHA-256' },
+    false,
+    ['sign', 'verify'],
+  )
+}
+
+async function signAction(
+  secret: string,
+  id: string,
+  action: 'approve' | 'reject',
+  expUnix: number,
+): Promise<string> {
+  const key = await importKey(secret)
+  const data = enc.encode(`${id}:${action}:${expUnix}`)
+  const sig = await crypto.subtle.sign('HMAC', key, data)
+  return toHex(sig)
+}
+
+async function verifyAction(
+  secret: string,
+  id: string,
+  action: string,
+  expUnix: number,
+  sigHex: string,
+): Promise<boolean> {
+  if (action !== 'approve' && action !== 'reject') return false
+  if (!id || !sigHex || !Number.isFinite(expUnix)) return false
+  if (Math.floor(Date.now() / 1000) > expUnix) return false
+  const expected = await signAction(secret, id, action as 'approve' | 'reject', expUnix)
+  if (expected.length !== sigHex.length) return false
+  let ok = 0
+  for (let i = 0; i < expected.length; i++) {
+    ok |= expected.charCodeAt(i) ^ sigHex.charCodeAt(i)
+  }
+  return ok === 0
+}
 
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') {
