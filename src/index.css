@@ -81,7 +81,7 @@ button {
 }
 
 .container {
-  width: min(100% - 2.5rem, var(--container));
+  width: min(100% - clamp(2.5rem, 8vw, 5rem), var(--container));
   margin-inline: auto;
 }
 
@@ -394,13 +394,19 @@ button {
 .hero__content {
   position: relative;
   z-index: 2;
-  max-width: 34rem;
-  width: 100%;
-  margin-inline: 0;
-  margin-right: auto;
+  /* Same centered track as the header — text stays left-aligned inside */
+  width: min(100% - clamp(3rem, 10vw, 6rem), var(--container));
+  max-width: none;
+  margin-inline: auto;
   text-align: left;
-  justify-self: start;
+  justify-self: center;
   padding-top: 0.5rem;
+  box-sizing: border-box;
+}
+
+.hero__content .hero__title,
+.hero__content .hero__lead {
+  max-width: 34rem;
 }
 
 .hero__brand {
@@ -471,6 +477,12 @@ button {
   right: 0;
   bottom: 1.5rem;
   z-index: 2;
+}
+
+.hero__chip.container {
+  width: min(100% - clamp(3rem, 10vw, 6rem), var(--container));
+  margin-inline: auto;
+  box-sizing: border-box;
 }
 
 .hero__chip-card {
@@ -1337,7 +1349,7 @@ button {
 
 @media (max-width: 640px) {
   .container {
-    width: min(100% - 1.5rem, var(--container));
+    width: min(100% - 2rem, var(--container));
   }
 
   .why__grid,
@@ -1349,6 +1361,11 @@ button {
 
   .gallery-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .hero__content,
+  .hero__chip.container {
+    width: min(100% - 2rem, var(--container));
   }
 
   .hero__actions {
