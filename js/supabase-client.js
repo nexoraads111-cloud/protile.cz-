@@ -65,21 +65,30 @@
   }
 
   function publicUrl(storagePath) {
-    if (!db || !storagePath) return ''
+    if (!storagePath) return ''
+    // External image URL saved from admin «Přidat z URL»
+    if (/^https?:\/\//i.test(storagePath)) return storagePath
+    if (!db) return ''
     const { data } = db.storage.from(GALLERY_BUCKET).getPublicUrl(storagePath)
     return data?.publicUrl || ''
   }
 
-  const CATEGORY_IDS = ['obklady', 'koupelny', 'kamen', 'schody']
+  function isExternalUrl(path) {
+    return /^https?:\/\//i.test(String(path || ''))
+  }
+
+  const CATEGORY_IDS = ['koupelny', 'obklady', 'dlazby']
+  const LEGACY_CATEGORY = { kamen: 'koupelny', schody: 'dlazby', kuchyn: 'obklady', kuchyne: 'obklady' }
 
   function resolveCategory(row) {
     const raw = String(row?.category || '').trim().toLowerCase()
     if (CATEGORY_IDS.includes(raw)) return raw
+    if (LEGACY_CATEGORY[raw]) return LEGACY_CATEGORY[raw]
     const text = `${row?.alt_text || row?.alt || ''} ${row?.storage_path || ''}`.toLowerCase()
-    if (/koupel|vana|sprch|bath/.test(text)) return 'koupelny'
-    if (/schod|stairs|podest/.test(text)) return 'schody'
-    if (/kamen|fas[aá]d|stone/.test(text)) return 'kamen'
-    if (/obklad|dla[zž]|tile|terasa|balkon|chodba/.test(text)) return 'obklady'
+    if (/koupel|vana|sprch|bath|wc|toalet/.test(text)) return 'koupelny'
+    if (/dla[zž]|podlah|terasa|balkon|chodba|nivel|floor|schod|stairs|podest/.test(text)) return 'dlazby'
+    if (/obklad|tile|roh|sp[aá]r|detail/.test(text)) return 'obklady'
+    if (/kamen|mramor|fas[aá]d|stone/.test(text)) return 'koupelny'
     return 'obklady'
   }
 
@@ -182,12 +191,68 @@
         throw delRow
       }
     }
-    if (path) {
+    // External URL rows have no Storage object
+    if (path && !isExternalUrl(path)) {
       const { error: delFile } = await db.storage.from(GALLERY_BUCKET).remove([path])
       if (delFile) {
         delFile.message = `Storage delete: ${formatError(delFile)}`
         throw delFile
       }
+    }
+  }
+
+  /**
+   * Add photo from a public https URL.
+   * Tries to download → Storage upload; on CORS/network failure stores the URL in DB.
+   */
+  async function addFromUrl(imageUrl, userId, altText, category) {
+    const url = String(imageUrl || '').trim()
+    if (!/^https?:\/\//i.test(url)) {
+      throw new Error('Zadejte platnou URL začínající na http:// nebo https://.')
+    }
+    if (!userId) throw new Error('Chybí user id — nejste přihlášeni.')
+
+    const cat = resolveCategory({ category, alt_text: altText })
+    const caption = (altText || '').trim() || 'Fotografie realizace'
+
+    // Prefer copying into our bucket so the portfolio stays durable
+    try {
+      const res = await fetch(url, { mode: 'cors' })
+      if (!res.ok) throw new Error(`HTTP ${res.status}`)
+      const blob = await res.blob()
+      let type = (blob.type || '').toLowerCase()
+      if (!ALLOWED_TYPES[type]) {
+        const lower = url.toLowerCase()
+        if (lower.includes('.png')) type = 'image/png'
+        else if (lower.includes('.webp')) type = 'image/webp'
+        else type = 'image/jpeg'
+      }
+      if (!ALLOWED_TYPES[type]) {
+        throw new Error('URL neukazuje na JPEG / PNG / WebP.')
+      }
+      if (blob.size > MAX_BYTES) {
+        throw new Error('Soubor z URL je větší než 5 MB.')
+      }
+      const ext = ALLOWED_TYPES[type]
+      const file = new File([blob], `url-${Date.now()}.${ext}`, { type })
+      return await uploadOne(file, userId, caption, cat)
+    } catch (err) {
+      // Fallback: store external URL (display via <img>, no Storage object)
+      const row = {
+        storage_path: url,
+        alt_text: caption,
+        category: cat,
+      }
+      let { error: rowError } = await db.from('gallery_images').insert(row)
+      if (rowError && /category/i.test(rowError.message || '')) {
+        delete row.category
+        ;({ error: rowError } = await db.from('gallery_images').insert(row))
+      }
+      if (rowError) {
+        rowError.message = `DB gallery_images: ${formatError(rowError)} · (stáhnout z URL se nepodařilo: ${formatError(err)})`
+        throw rowError
+      }
+      return url
     }
   }
 
@@ -200,10 +265,12 @@
     CATEGORY_IDS,
     formatError,
     publicUrl,
+    isExternalUrl,
     resolveCategory,
     fetchGalleryImages,
     validateFiles,
     uploadOne,
+    addFromUrl,
     deleteImage,
   }
 })(window)

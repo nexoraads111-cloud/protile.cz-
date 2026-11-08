@@ -14,17 +14,17 @@ const FEATURED = [
   },
   {
     id: 'feat-stone',
-    title: 'Sprcha — kámen',
-    meta: 'Mramorový obklad · niky',
+    title: 'Koupelna — sprcha',
+    meta: 'Lineární žlab · velkoformát',
     image: photos.services.tiles,
     match: (g) => g.id === 'p12',
   },
   {
     id: 'feat-floor',
-    title: 'Chodba — dlažba',
-    meta: 'Velkoformát · rovný povrch',
+    title: 'Dlažba — chodba',
+    meta: 'Pokládka · rovný povrch',
     image: photos.services.stairs,
-    match: (g) => g.id === 'p18',
+    match: (g) => g.id === 'p15',
   },
 ]
 

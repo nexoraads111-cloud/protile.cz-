@@ -33,7 +33,10 @@ export const db = isSupabaseConfigured ? createClient(url, anonKey) : null
 export const GALLERY_BUCKET = 'gallery'
 
 export function publicGalleryUrl(storagePath) {
-  if (!db || !storagePath) return ''
+  if (!storagePath) return ''
+  // External image URL saved from admin «Přidat z URL»
+  if (/^https?:\/\//i.test(storagePath)) return storagePath
+  if (!db) return ''
   const { data } = db.storage.from(GALLERY_BUCKET).getPublicUrl(storagePath)
   return data?.publicUrl || ''
 }

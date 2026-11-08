@@ -6,7 +6,7 @@ Plain HTML/CSS/JS — no Node at runtime. Works next to the existing marketing S
 
 | Path | Role |
 |------|------|
-| `admin.html` | Admin UI (login, upload, list, delete, logout) |
+| `admin.html` | Admin UI (login, add file/URL, list, delete, logout) |
 | `css/admin.css` | Admin styles (black / gold, mobile-first) |
 | `css/public-gallery.css` | Public “Nahrané realizace” section |
 | `js/supabase-config.example.js` | Template for URL + publishable key |
@@ -26,8 +26,8 @@ cp js/supabase-config.example.js js/supabase-config.js
 Edit `js/supabase-config.js`:
 
 ```js
-window.ProTile CZ_SUPABASE = {
-  url: 'https://vxitorpldzfwtexzswde.supabase.co',
+window.PROTILE_SUPABASE = {
+  url: 'https://vmqggaksvweiyhevgebs.supabase.co',
   anonKey: 'YOUR_PUBLISHABLE_KEY',
 }
 ```
@@ -44,7 +44,7 @@ Use the **anon / publishable** key only. Never put `service_role` in these files
 
 **If upload fails with** `gallery_images` **RLS / 42501:** run `supabase/fix-gallery-images-rls.sql` (drops all table policies, grants SELECT to public + INSERT/DELETE to authenticated).
 
-**Category for Realizace filters:** run `supabase/add-gallery-category.sql`, then choose **Kategorie** in `admin.html` on upload (`obklady` / `koupelny` / `kamen` / `schody`). Uploads appear in **Naše práce v praxi** (unified grid), not a separate «Nahrané» block.
+**Category for Realizace filters:** run `supabase/add-gallery-category.sql`, then choose **Kategorie** in `admin.html` on upload (`koupelny` / `obklady` / `dlazby`). Uploads appear in **Naše práce v praxi** (unified grid), not a separate «Nahrané» block. Legacy ids `kamen` / `schody` map to `koupelny` / `dlazby`.
 
 ### B. Create admin user (no public signup)
 1. **Authentication** → **Users** → **Add user**  
@@ -67,10 +67,12 @@ npx --yes serve -l 4177 .
 # open http://127.0.0.1:4177/  → scroll to “Nahrané realizace”
 ```
 
-1. Sign in on `admin.html`  
-2. Upload 1–2 JPEG/PNG/WebP ≤5 MB  
-3. Refresh the marketing page — new photos appear under **Nahrané realizace**  
-4. Delete from admin → refresh public page  
+1. Sign in on `admin.html` (Supabase Auth e-mail + heslo — stejný pattern jako `VITE_SUPABASE_*` / publishable key)  
+2. **Přidat fotografii:** soubor (JPEG/PNG/WebP ≤5 MB) **nebo** veřejná URL + český popis + kategorie (Koupelny / Obklady / Dlažby)  
+3. Obnovte marketingovou stránku — nové fotky jsou v sekci **Realizace** pod filtrem  
+4. **Smazat** v adminu → obnovte veřejnou stránku  
+
+Poznámka: vestavěné fotky `photos123/` zůstávají ve kódu; admin spravuje jen řádky v `gallery_images` (+ Storage).
 
 ## 4. GitHub Pages (when user allows publish)
 
