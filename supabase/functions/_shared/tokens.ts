@@ -1,4 +1,4 @@
-/** HMAC-SHA256 signed action tokens for review approve/reject links. */
+/** @deprecated Inlined into each function `index.ts` for Editor deploys. Kept for reference only. */
 
 const enc = new TextEncoder()
 
@@ -16,7 +16,6 @@ async function importKey(secret: string): Promise<CryptoKey> {
   )
 }
 
-/** Payload: `${id}:${action}:${exp}` */
 export async function signAction(
   secret: string,
   id: string,
@@ -41,7 +40,6 @@ export async function verifyAction(
   if (Math.floor(Date.now() / 1000) > expUnix) return false
   const expected = await signAction(secret, id, action, expUnix)
   if (expected.length !== sigHex.length) return false
-  // constant-time-ish compare
   let ok = 0
   for (let i = 0; i < expected.length; i++) {
     ok |= expected.charCodeAt(i) ^ sigHex.charCodeAt(i)

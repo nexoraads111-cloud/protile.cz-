@@ -6,7 +6,7 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
 
-PROJECT_REF="${SUPABASE_PROJECT_REF:-vxitorpldzfwtexzswde}"
+PROJECT_REF="${SUPABASE_PROJECT_REF:-vmqggaksvweiyhevgebs}"
 SECRETS_FILE="${REVIEWS_SECRETS_FILE:-$ROOT/.local-secrets/reviews.env}"
 
 if [[ -f "$SECRETS_FILE" ]]; then
@@ -29,9 +29,9 @@ if [[ ! -f "$SQL_FILE" ]]; then
 fi
 
 echo "==> Applying reviews.sql via Management API…"
-python3 - <<'PY'
+SUPABASE_PROJECT_REF="$PROJECT_REF" python3 - <<'PY'
 import json, os, pathlib, urllib.request
-ref = os.environ.get("SUPABASE_PROJECT_REF", "vxitorpldzfwtexzswde")
+ref = os.environ.get("SUPABASE_PROJECT_REF", "vmqggaksvweiyhevgebs")
 token = os.environ["SUPABASE_ACCESS_TOKEN"]
 sql = pathlib.Path("supabase/reviews.sql").read_text()
 req = urllib.request.Request(
@@ -53,17 +53,32 @@ except urllib.error.HTTPError as e:
 PY
 
 echo "==> Setting Edge Function secrets…"
-npx --yes supabase secrets set \
-  --project-ref "$PROJECT_REF" \
-  "RESEND_API_KEY=${RESEND_API_KEY:?RESEND_API_KEY required}" \
-  "REVIEW_ACTION_SECRET=${REVIEW_ACTION_SECRET:?REVIEW_ACTION_SECRET required}" \
-  "REVIEW_NOTIFY_EMAIL=${REVIEW_NOTIFY_EMAIL:-dospreton.stav.cz@gmail.com}" \
-  "REVIEW_FROM_EMAIL=${REVIEW_FROM_EMAIL:-ProTile CZ <onboarding@resend.dev>}" \
-  "SITE_URL=${SITE_URL:-http://dospreton-stav.cz}"
+REVIEW_ACTION_SECRET="${REVIEW_ACTION_SECRET:?REVIEW_ACTION_SECRET required}"
+REVIEW_NOTIFY_EMAIL="${REVIEW_NOTIFY_EMAIL:-protilecz@gmail.com}"
+REVIEW_FROM_EMAIL="${REVIEW_FROM_EMAIL:-ProTile CZ <onboarding@resend.dev>}"
+SITE_URL="${SITE_URL:-https://protile.cz}"
+
+SECRET_ARGS=(
+  "REVIEW_ACTION_SECRET=${REVIEW_ACTION_SECRET}"
+  "REVIEW_NOTIFY_EMAIL=${REVIEW_NOTIFY_EMAIL}"
+  "REVIEW_FROM_EMAIL=${REVIEW_FROM_EMAIL}"
+  "SITE_URL=${SITE_URL}"
+)
+
+if [[ -n "${RESEND_API_KEY:-}" ]]; then
+  SECRET_ARGS+=("RESEND_API_KEY=${RESEND_API_KEY}")
+else
+  echo "WARN: RESEND_API_KEY missing — wiring DB/site secrets only; approval email will stay skipped until Resend is set."
+fi
+
+npx --yes supabase secrets set --project-ref "$PROJECT_REF" "${SECRET_ARGS[@]}"
 
 echo "==> Deploying Edge Functions…"
 # --no-verify-jwt: email Accept/Cancel links open in a browser without a Supabase JWT
 npx --yes supabase functions deploy submit-review --project-ref "$PROJECT_REF" --no-verify-jwt
 npx --yes supabase functions deploy review-action --project-ref "$PROJECT_REF" --no-verify-jwt
 
-echo "Done. Test: open http://dospreton-stav.cz/#recenze → Zanechat recenzi"
+echo "Done. Test: open https://protile.cz/#recenze → Zanechat recenzi"
+if [[ -z "${RESEND_API_KEY:-}" ]]; then
+  echo "Still needed: RESEND_API_KEY (user/Resend) → supabase secrets set --project-ref $PROJECT_REF RESEND_API_KEY=…"
+fi

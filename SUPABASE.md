@@ -1,7 +1,7 @@
 # Supabase setup — ProTile CZ gallery
 
 The public **Realizace** section merges local client photos with rows from Supabase.
-Admin upload lives at **`#admin`** (e.g. `http://dospreton-stav.cz/#admin`).
+Admin upload lives at **`#admin`** (e.g. `https://protile.cz/#admin`).
 
 ## 1. Environment variables
 
