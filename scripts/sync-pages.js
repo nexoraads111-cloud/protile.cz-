@@ -93,7 +93,7 @@ function prepareMarketingIndex(htmlPath) {
   if (!html.includes('js/supabase-config.js')) {
     html = html.replace(
       /(<script type="module"[^>]*src="\.\/assets\/[^"]+"[^>]*><\/script>)/,
-      '    <script src="./js/supabase-config.js?v=4"></script>\n    $1',
+      '    <script src="./js/supabase-config.js?v=6"></script>\n    $1',
     )
   }
   writeFileSync(htmlPath, html)

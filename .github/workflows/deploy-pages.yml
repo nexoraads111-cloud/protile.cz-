@@ -43,10 +43,11 @@ jobs:
             } > .env.production
             echo "Wrote Supabase config from secrets"
           else
-            echo "No Supabase secrets — building with local gallery + static reviews"
+            echo "No Actions secrets — npm build will bake from committed js/supabase-config.js"
             rm -f .env.production
           fi
       - run: npm run build
+        # write-env-from-config.js (in npm run build) fills .env.production from js/supabase-config.js when secrets are empty
       - name: Stage Pages artifact (repo root style)
         run: |
           mkdir -p _site

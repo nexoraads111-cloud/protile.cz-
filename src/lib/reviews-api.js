@@ -1,4 +1,4 @@
-import { db, isSupabaseConfigured } from './supabase'
+import { db, getDb, getIsSupabaseConfigured } from './supabase'
 
 function readConfig() {
   const fromEnv = {
@@ -31,7 +31,7 @@ function normalizeRating(rating) {
  * Public approved reviews for the Recenze section.
  */
 export async function fetchApprovedReviews() {
-  if (!isSupabaseConfigured || !db) return []
+  if (!getIsSupabaseConfigured() || !getDb()) return []
   const { data, error } = await db
     .from('reviews')
     .select('id, author_name, body, rating, created_at')
@@ -92,7 +92,7 @@ async function submitViaEdgeFunction({ authorName, body, rating, url, anonKey })
 }
 
 async function submitViaTable({ authorName, body, rating }) {
-  if (!db) throw new Error('Supabase není nakonfigurován.')
+  if (!getDb()) throw new Error('Supabase není nakonfigurován.')
   const row = {
     author_name: authorName,
     body,
@@ -100,7 +100,8 @@ async function submitViaTable({ authorName, body, rating }) {
   }
   if (rating != null) row.rating = rating
 
-  const { data, error } = await db.from('reviews').insert(row).select('id').single()
+  // Prefer: return=minimal — anon RLS cannot SELECT pending rows, so .select() fails.
+  const { error } = await db.from('reviews').insert(row)
   if (error) {
     if (error.code === 'PGRST205' || /Could not find the table/i.test(error.message || '')) {
       throw new Error(
@@ -111,7 +112,7 @@ async function submitViaTable({ authorName, body, rating }) {
   }
   return {
     ok: true,
-    id: data?.id,
+    id: null,
     via: 'table',
     emailSent: false,
     message: 'Děkujeme. Recenze byla uložena a po schválení se zobrazí na webu.',

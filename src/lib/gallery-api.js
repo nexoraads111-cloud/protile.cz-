@@ -1,4 +1,4 @@
-import { db, isSupabaseConfigured, publicGalleryUrl, GALLERY_BUCKET } from './supabase'
+import { db, getDb, getIsSupabaseConfigured, publicGalleryUrl, GALLERY_BUCKET } from './supabase'
 import { resolveGalleryCategory } from './gallery-category'
 
 const ALLOWED_TYPES = {
@@ -18,7 +18,7 @@ export const UPLOAD_LIMITS = {
  * @returns {Promise<Array<{ id: string, title: string, image: string, category: string, source: string, storagePath?: string }>>}
  */
 export async function fetchRemoteGallery() {
-  if (!isSupabaseConfigured || !db) return []
+  if (!getIsSupabaseConfigured() || !getDb()) return []
 
   // Select * so missing optional columns (e.g. category) do not 400 the whole gallery
   const { data, error } = await db
