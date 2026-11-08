@@ -11,8 +11,8 @@ export default function Hero() {
             src={photos.heroJpg}
             alt=""
             className="hero__img"
-            width={1844}
-            height={1086}
+            width={1350}
+            height={843}
             fetchPriority="high"
             decoding="async"
           />
@@ -21,27 +21,29 @@ export default function Hero() {
       </div>
 
       <div className="hero__content container">
-        <h1 className="hero__title reveal reveal--1">
+        <p className="hero__brand reveal reveal--1">
+          <span>{company.shortName}</span>
+          <span className="hero__brand-line" aria-hidden="true" />
+        </p>
+        <h1 className="hero__title reveal reveal--2">
           Precizní obklady.
           <br />
           Dokončení na míru.
         </h1>
-        <p className="hero__lead reveal reveal--2">
+        <p className="hero__lead reveal reveal--3">
           Obklady, dlažby a dokončovací práce. {company.areaFull}.
         </p>
 
-        <div className="hero__actions reveal reveal--3">
+        <div className="hero__actions reveal reveal--4">
           <a href="#kontakt" className="btn btn--dark btn--pill btn--lg">
-            Spočítat poptávku
+            Nezávazná poptávka
             <span className="btn__arrow" aria-hidden="true">
               →
             </span>
           </a>
-          <a href="#realizace" className="hero__video-link">
-            <span className="hero__play" aria-hidden="true">
-              ▶
-            </span>
-            Podívejte se na naše realizace
+          <a href="#realizace" className="hero__secondary">
+            Naše realizace
+            <span aria-hidden="true">→</span>
           </a>
         </div>
       </div>
@@ -49,7 +51,7 @@ export default function Hero() {
       <aside className="hero__chip container">
         <div className="hero__chip-card">
           <img
-            src={photos.services.bathroom}
+            src={photos.chip}
             alt=""
             width={72}
             height={56}
@@ -57,8 +59,8 @@ export default function Hero() {
             decoding="async"
           />
           <div>
-            <p>Individuální přístup ke každé zakázce</p>
-            <a href="#proc-my">Více detailů →</a>
+            <p>Reálné zakázky — Praha i celá ČR</p>
+            <a href="#realizace">Prohlédnout →</a>
           </div>
         </div>
       </aside>

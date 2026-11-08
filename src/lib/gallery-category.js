@@ -4,8 +4,8 @@ export const GALLERY_CATEGORY_IDS = ['obklady', 'koupelny', 'kamen', 'schody']
 export const GALLERY_CATEGORY_OPTIONS = [
   { id: 'obklady', label: 'Obklady' },
   { id: 'koupelny', label: 'Koupelny' },
-  { id: 'kamen', label: 'Fasády / kámen' },
-  { id: 'schody', label: 'Schody' },
+  { id: 'kamen', label: 'Kámen / mramor' },
+  { id: 'schody', label: 'Dlažba / chodby' },
 ]
 
 const ALLOWED = new Set(GALLERY_CATEGORY_IDS)

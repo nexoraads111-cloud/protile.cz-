@@ -43,6 +43,7 @@ mkdirSync('docs', { recursive: true })
 copy(normalizedHtml, join('docs', 'index.html'))
 copy(join(dist, 'assets'), join('docs', 'assets'))
 if (existsSync(join(dist, 'photos'))) copy(join(dist, 'photos'), join('docs', 'photos'))
+if (existsSync(join(dist, 'photos123'))) copy(join(dist, 'photos123'), join('docs', 'photos123'))
 if (existsSync(join(dist, 'favicon.svg'))) copy(join(dist, 'favicon.svg'), join('docs', 'favicon.svg'))
 writeFileSync(join('docs', '.nojekyll'), '')
 if (existsSync(join('docs', 'index.dev.html'))) rmSync(join('docs', 'index.dev.html'))
@@ -54,6 +55,13 @@ if (existsSync('assets')) rmSync('assets', { recursive: true, force: true })
 if (existsSync('photos')) rmSync('photos', { recursive: true, force: true })
 copy(join(dist, 'assets'), 'assets')
 if (existsSync(join(dist, 'photos'))) copy(join(dist, 'photos'), 'photos')
+// Merge web-optimized photos123 (p01.jpg…) into root photos123/ without wiping originals
+if (existsSync(join(dist, 'photos123'))) {
+  mkdirSync('photos123', { recursive: true })
+  for (const name of readdirSync(join(dist, 'photos123'))) {
+    copy(join(dist, 'photos123', name), join('photos123', name))
+  }
+}
 if (existsSync(join(dist, 'favicon.svg'))) copy(join(dist, 'favicon.svg'), 'favicon.svg')
 // Review Accept/Cancel result page (Edge Function redirects here — avoids text/plain HTML)
 if (existsSync('recenze-stav.html')) {

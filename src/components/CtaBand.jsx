@@ -20,7 +20,7 @@ export default function CtaBand() {
           </div>
           <div className="cta-band__media" aria-hidden="true">
             <img
-              src={photos.about}
+              src={photos.services.facade || photos.about}
               alt=""
               loading="lazy"
               decoding="async"

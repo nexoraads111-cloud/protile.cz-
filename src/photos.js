@@ -1,113 +1,84 @@
-/** Client project photos — WebP primary for perf, paths under /photos. */
+/** Client project photos from photos123/ — served via /photos123. */
+
+const P = (n) => `/photos123/p${String(n).padStart(2, '0')}.jpg`
 
 export const CATEGORIES = [
   { id: 'all', label: 'Vše' },
-  { id: 'obklady', label: 'Obklady' },
   { id: 'koupelny', label: 'Koupelny' },
-  { id: 'kamen', label: 'Fasády / kámen' },
-  { id: 'schody', label: 'Schody' },
+  { id: 'obklady', label: 'Obklady' },
+  { id: 'kamen', label: 'Kámen / mramor' },
+  { id: 'schody', label: 'Dlažba / chodby' },
 ]
 
-/** Full gallery — every client photo, with filter categories */
-export const gallery = [
-  {
-    id: 'bath-01',
-    title: 'Koupelna — obklady',
-    image: '/photos/bath-01-wide.webp',
-    category: 'koupelny',
-  },
-  {
-    id: 'bath-02',
-    title: 'Koupelna — vchod a vana',
-    image: '/photos/bath-02-doorway.webp',
-    category: 'koupelny',
-  },
-  {
-    id: 'bath-03',
-    title: 'Technická místnost',
-    image: '/photos/bath-03-plumbing.webp',
-    category: 'koupelny',
-  },
-  {
-    id: 'bath-04',
-    title: 'Koupelna — nika',
-    image: '/photos/bath-04-niche.webp',
-    category: 'koupelny',
-  },
-  {
-    id: 'bath-05',
-    title: 'Koupelna — vana a instalace',
-    image: '/photos/bath-05-tub-side.webp',
-    category: 'koupelny',
-  },
-  {
-    id: 'tiling-01',
-    title: 'Schodiště — pohled nahoru',
-    image: '/photos/tiling-01-stairs-up.webp',
-    category: 'schody',
-  },
-  {
-    id: 'tiling-02',
-    title: 'Schodiště — pohled dolů',
-    image: '/photos/tiling-02-stairs-down.webp',
-    category: 'schody',
-  },
-  {
-    id: 'tiling-03',
-    title: 'Chodba a podesty',
-    image: '/photos/tiling-03-landing.webp',
-    category: 'schody',
-  },
-  {
-    id: 'tiling-04',
-    title: 'Chodba — dlažba',
-    image: '/photos/tiling-04-hallway.webp',
-    category: 'obklady',
-  },
-  {
-    id: 'tiling-05',
-    title: 'Balkon — dlažba',
-    image: '/photos/tiling-05-yellow-nook.webp',
-    category: 'obklady',
-  },
-  {
-    id: 'tiling-06',
-    title: 'Schodiště — detail',
-    image: '/photos/tiling-06-stairs-tight.webp',
-    category: 'schody',
-  },
-  {
-    id: 'tiling-07',
-    title: 'Terasa — dlažba',
-    image: '/photos/tiling-07-patio.webp',
-    category: 'obklady',
-  },
-  {
-    id: 'tiling-08',
-    title: 'Kamenný chodník a obklad',
-    image: '/photos/tiling-08-stone-walkway.webp',
-    category: 'kamen',
-  },
-  {
-    id: 'tiling-09',
-    title: 'Kamenný obklad — roh',
-    image: '/photos/tiling-09-stone-corner.webp',
-    category: 'kamen',
-  },
+/** Curated titles for photos123 set (real project documentation). */
+const META = [
+  [1, 'koupelny', 'Koupelna — béžový velkoformát'],
+  [2, 'koupelny', 'Koupelna — roh a vana'],
+  [3, 'koupelny', 'Koupelna — obklad stěn'],
+  [4, 'kamen', 'Sprcha — mramorový obklad'],
+  [5, 'kamen', 'Sprcha — žíhaný kámen'],
+  [6, 'kamen', 'Sprcha — detail spár'],
+  [7, 'kamen', 'Sprcha — vestavěná nika'],
+  [8, 'kamen', 'Koupelna — kamenný obklad'],
+  [9, 'kamen', 'Sprcha — plošný obklad'],
+  [10, 'kamen', 'Sprcha — rohová spára'],
+  [11, 'kamen', 'Sprcha — podlaha a stěny'],
+  [12, 'kamen', 'Koupelna — šedý kámen'],
+  [13, 'kamen', 'Koupelna — detail kamene'],
+  [14, 'schody', 'Chodba — velkoformátová dlažba'],
+  [15, 'obklady', 'Dlažba — pokládka s křížky'],
+  [16, 'schody', 'Obývací prostor — dlažba'],
+  [17, 'koupelny', 'Koupelna — vana a obklad'],
+  [18, 'schody', 'Chodba — šedá dlažba'],
+  [19, 'koupelny', 'Sprcha — světlý obklad'],
+  [20, 'koupelny', 'Sprchy — dvojitá kabina'],
+  [21, 'koupelny', 'Koupelna — vana a stěny'],
+  [22, 'koupelny', 'Koupelna — tmavá dlažba'],
+  [23, 'koupelny', 'Koupelna — přechod stěna/podlaha'],
+  [24, 'koupelny', 'Koupelna — pohled shora'],
+  [25, 'koupelny', 'Sprcha — světlý interiér'],
+  [26, 'koupelny', 'WC — velkoformátový obklad'],
+  [27, 'koupelny', 'WC — nika a panel'],
+  [28, 'koupelny', 'Koupelna — mramorové stěny'],
+  [29, 'koupelny', 'Koupelna — příčka a vana'],
+  [30, 'koupelny', 'WC — rohový detail'],
+  [31, 'koupelny', 'WC — čelní pohled'],
+  [32, 'kamen', 'Sprcha — tmavý mramor'],
+  [33, 'kamen', 'Sprcha — leštěný kámen'],
+  [34, 'kamen', 'Sprcha — úzký prostor'],
+  [35, 'kamen', 'Sprcha — kamenná příčka'],
+  [36, 'koupelny', 'Koupelna — matný šedý obklad'],
+  [37, 'koupelny', 'Koupelna — vana a niky'],
+  [38, 'koupelny', 'Koupelna — čistý prostor'],
+  [39, 'koupelny', 'Koupelna — detail nik'],
+  [40, 'obklady', 'Obklad — přesné spáry'],
+  [41, 'obklady', 'Obklad — velkoformát'],
+  [42, 'schody', 'Dlažba — rovný povrch'],
+  [43, 'koupelny', 'Koupelna — finální linie'],
+  [44, 'obklady', 'Obklad — pracovní detail'],
 ]
+
+/** Full gallery — every photos123 image */
+export const gallery = META.map(([n, category, title]) => ({
+  id: `p${String(n).padStart(2, '0')}`,
+  title,
+  image: P(n),
+  category,
+}))
 
 export const photos = {
-  hero: '/photos/hero-bathroom.webp',
-  heroJpg: '/photos/hero-bathroom.jpg',
-  heroTexture: '/photos/hero-texture.webp',
-  about: '/photos/bath-01-wide.webp',
-  contactBg: '/photos/tiling-09-stone-corner.webp',
+  hero: '/photos123/hero.webp',
+  heroJpg: '/photos123/hero.jpg',
+  about: '/photos123/feat-grey.jpg',
+  contactBg: P(12),
   services: {
-    tiles: '/photos/mockup-tiles.webp',
-    bathroom: '/photos/mockup-bath.webp',
-    stairs: '/photos/mockup-stairs.webp',
-    facade: '/photos/tiling-09-stone-corner.webp',
+    bathroom: '/photos123/feat-bath.jpg',
+    tiles: '/photos123/feat-stone.jpg',
+    stairs: '/photos123/feat-floor.jpg',
+    facade: P(32),
+    niche: P(26),
   },
+  chip: '/photos123/feat-grey.jpg',
   realizations: gallery,
 }
 

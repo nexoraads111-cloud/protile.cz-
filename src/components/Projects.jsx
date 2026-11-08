@@ -8,23 +8,23 @@ const FEATURED = [
   {
     id: 'feat-bath',
     title: 'Koupelna — velkoformát',
-    meta: 'Obklady · hydroizolace · spáry',
+    meta: 'Obklady · vana · přesné spáry',
     image: photos.services.bathroom,
-    match: (g) => g.category === 'koupelny' || g.id === 'bath-01',
+    match: (g) => g.id === 'p21',
   },
   {
-    id: 'feat-tiles',
-    title: 'Obklady a dlažby',
-    meta: 'Interiér · přesné spáry',
+    id: 'feat-stone',
+    title: 'Sprcha — kámen',
+    meta: 'Mramorový obklad · niky',
     image: photos.services.tiles,
-    match: (g) => g.category === 'obklady' || g.id === 'tiling-04',
+    match: (g) => g.id === 'p12',
   },
   {
-    id: 'feat-stairs',
-    title: 'Schody a terasa',
-    meta: 'Exteriér · kámen · dlažba',
+    id: 'feat-floor',
+    title: 'Chodba — dlažba',
+    meta: 'Velkoformát · rovný povrch',
     image: photos.services.stairs,
-    match: (g) => g.category === 'schody' || g.id === 'tiling-01',
+    match: (g) => g.id === 'p18',
   },
 ]
 
@@ -69,10 +69,10 @@ export default function Projects() {
               aria-label={`Otevřít: ${feat.title}`}
             >
               <div className="project-card__media">
-                <img
+                  <img
                   src={feat.image}
                   alt=""
-                  loading="lazy"
+                  loading="eager"
                   decoding="async"
                   width={480}
                   height={560}
@@ -131,7 +131,7 @@ export default function Projects() {
                     <img
                       src={item.image}
                       alt={item.title}
-                      loading="lazy"
+                      loading={i < 6 ? 'eager' : 'lazy'}
                       decoding="async"
                       width={480}
                       height={360}
