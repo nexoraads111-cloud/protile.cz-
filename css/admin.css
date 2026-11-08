@@ -356,6 +356,43 @@ code {
   border-radius: 10px;
 }
 
+.list-count {
+  font-family: var(--font);
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--muted);
+  letter-spacing: 0;
+}
+
+.thumb-edit {
+  display: grid;
+  gap: 0.25rem;
+  font-size: 0.72rem;
+  color: var(--muted-soft);
+}
+
+.thumb-edit input,
+.thumb-edit select {
+  width: 100%;
+  min-height: 36px;
+  padding: 0.35rem 0.5rem;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--white);
+  color: var(--ink);
+  font: inherit;
+  font-size: 0.8rem;
+}
+
+.thumb-actions {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.thumb-replace {
+  cursor: pointer;
+}
+
 .empty {
   color: var(--muted);
   margin: 0.5rem 0 0;

@@ -37,8 +37,8 @@
       <main class="panel">
         <h1>Fotografie realizací</h1>
         <p class="lead">
-          Přidejte nebo smažte fotografie v sekci Realizace. Po uložení se objeví na živém webu
-          (Supabase) — stačí obnovit stránku.
+          Správa celého portfolia Realizace: přidání, nahrazení i smazání. Seznam = všechny fotky
+          na živém webu (Supabase). Po změně obnovte <a href="./index.html#realizace">web</a>.
         </p>
 
         <div id="admin-msg" class="msg" role="status" aria-live="polite"></div>
@@ -152,20 +152,25 @@
           </form>
 
           <div class="list-head">
-            <h2>Nahrané fotografie</h2>
+            <h2>Fotografie na webu <span id="list-count" class="list-count"></span></h2>
             <button type="button" class="btn btn-outline" id="refresh">Obnovit seznam</button>
           </div>
-          <p id="list-empty" class="empty hidden">Zatím žádné nahrané fotografie.</p>
+          <p class="hint">
+            U každé fotky můžete upravit popis/kategorii, <strong>nahradit</strong> soubor, nebo
+            <strong>smazat</strong> (zmizí z Realizace). Označení «web» = seed ze static photos123.
+          </p>
+          <p id="list-empty" class="empty hidden">Zatím žádné fotografie v databázi.</p>
           <div id="thumbs" class="thumbs"></div>
         </section>
       </main>
     </div>
 
-    <script src="./js/crypto-polyfill.js?v=4"></script>
-    <script src="./js/supabase-config.js?v=4"></script>
+    <script src="./js/crypto-polyfill.js?v=5"></script>
+    <script src="./js/supabase-config.js?v=5"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-    <script src="./js/supabase-client.js?v=4"></script>
-    <script src="./js/admin.js?v=4"></script>
+    <script src="./js/supabase-client.js?v=5"></script>
+    <script src="./js/gallery-seed.js?v=5"></script>
+    <script src="./js/admin.js?v=5"></script>
     <script>
       const logoutBtn = document.getElementById('logout')
       const appView = document.getElementById('app-view')

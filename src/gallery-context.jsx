@@ -8,8 +8,9 @@ const GalleryContext = createContext(null)
 const staticItems = staticGallery.map((g) => ({ ...g, source: 'static' }))
 
 /**
- * Unified Realizace gallery: local client photos + Supabase uploads.
- * Filters (Vše / Obklady / …) apply to both sources.
+ * Unified Realizace gallery.
+ * When Supabase returns rows, DB is the source of truth (admin delete/replace updates the site).
+ * Falls back to static photos123 META only when remote is empty or unavailable.
  */
 export function GalleryProvider({ children }) {
   const configured = getIsSupabaseConfigured()
@@ -43,8 +44,8 @@ export function GalleryProvider({ children }) {
   }, [refresh])
 
   const items = useMemo(() => {
-    // Uploads first so new work shows at the top of «Vše»
-    return [...remote, ...staticItems]
+    if (remote.length > 0) return remote
+    return staticItems
   }, [remote])
 
   const value = useMemo(
