@@ -67,8 +67,9 @@ export const gallery = META.map(([n, category, title]) => ({
 }))
 
 export const photos = {
-  hero: '/photos123/hero.webp',
-  heroJpg: '/photos123/hero.jpg',
+  /** Luxury bathroom — layout-ref match (not construction WIP). */
+  hero: '/photos123/hero-luxury.webp',
+  heroJpg: '/photos123/hero-luxury.jpg',
   about: '/photos123/feat-grey.jpg',
   contactBg: P(12),
   services: {

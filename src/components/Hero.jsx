@@ -11,8 +11,8 @@ export default function Hero() {
             src={photos.heroJpg}
             alt=""
             className="hero__img"
-            width={1350}
-            height={843}
+            width={1672}
+            height={941}
             fetchPriority="high"
             decoding="async"
           />
