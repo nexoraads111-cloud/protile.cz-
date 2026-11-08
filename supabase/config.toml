@@ -1,5 +1,5 @@
 # Minimal Supabase project config for Edge Function deploys
-project_id = "vxitorpldzfwtexzswde"
+project_id = "vmqggaksvweiyhevgebs"
 
 [functions.submit-review]
 verify_jwt = false

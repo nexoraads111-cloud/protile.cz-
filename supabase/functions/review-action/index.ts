@@ -26,7 +26,7 @@ Deno.serve(async (req) => {
     const reviewSecret = Deno.env.get('REVIEW_ACTION_SECRET') || ''
     const supabaseUrl = Deno.env.get('SUPABASE_URL') || ''
     const serviceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') || ''
-    const siteUrl = (Deno.env.get('SITE_URL') || 'http://dospreton-stav.cz').replace(/\/$/, '')
+    const siteUrl = (Deno.env.get('SITE_URL') || 'https://protile.cz').replace(/\/$/, '')
 
     if (!reviewSecret || !supabaseUrl || !serviceKey) {
       return redirectResult('chyba', 303, siteUrl)
@@ -100,7 +100,7 @@ Deno.serve(async (req) => {
 function redirectResult(
   stav: 'schvalena' | 'odmitnuta' | 'neplatny' | 'nenalezena' | 'chyba',
   status = 303,
-  siteUrl = (Deno.env.get('SITE_URL') || 'http://dospreton-stav.cz').replace(/\/$/, ''),
+  siteUrl = (Deno.env.get('SITE_URL') || 'https://protile.cz').replace(/\/$/, ''),
 ) {
   const location = `${siteUrl}/recenze-stav.html?stav=${encodeURIComponent(stav)}`
   return new Response(null, {

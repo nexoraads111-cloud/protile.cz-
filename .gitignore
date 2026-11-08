@@ -29,3 +29,8 @@ yarn-error.log*
 .local-secrets/
 .env.production
 supabase/.temp/
+
+# local secrets (agent)
+.env.local
+.env.edge.local
+.env*.local

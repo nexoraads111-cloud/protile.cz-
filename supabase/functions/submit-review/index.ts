@@ -24,8 +24,8 @@ Deno.serve(async (req) => {
     const reviewSecret = Deno.env.get('REVIEW_ACTION_SECRET') || ''
     const resendKey = Deno.env.get('RESEND_API_KEY') || ''
     const notifyEmail =
-      (Deno.env.get('REVIEW_NOTIFY_EMAIL') || 'dospreton.stav.cz@gmail.com').trim()
-    const siteUrl = (Deno.env.get('SITE_URL') || 'http://dospreton-stav.cz').replace(/\/$/, '')
+      (Deno.env.get('REVIEW_NOTIFY_EMAIL') || 'protilecz@gmail.com').trim()
+    const siteUrl = (Deno.env.get('SITE_URL') || 'https://protile.cz').replace(/\/$/, '')
     const fromEmail =
       (Deno.env.get('REVIEW_FROM_EMAIL') || 'ProTile CZ <onboarding@resend.dev>').trim()
 
@@ -144,7 +144,7 @@ Deno.serve(async (req) => {
         // until a custom domain is verified.
         if (/verify a domain|own email address/i.test(detail)) {
           emailSkippedReason +=
-            ' Ověřte doménu v Resend a nastavte REVIEW_FROM_EMAIL (např. recenze@dospreton-stav.cz).'
+            ' Ověřte doménu v Resend a nastavte REVIEW_FROM_EMAIL (např. recenze@protile.cz).'
         }
       } else {
         emailSent = true
