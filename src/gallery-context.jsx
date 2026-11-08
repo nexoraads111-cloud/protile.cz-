@@ -1,7 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import { CATEGORIES, gallery as staticGallery } from './photos'
 import { fetchRemoteGallery } from './lib/gallery-api'
-import { isSupabaseConfigured } from './lib/supabase'
+import { getIsSupabaseConfigured } from './lib/supabase'
 
 const GalleryContext = createContext(null)
 
@@ -12,12 +12,13 @@ const staticItems = staticGallery.map((g) => ({ ...g, source: 'static' }))
  * Filters (Vše / Obklady / …) apply to both sources.
  */
 export function GalleryProvider({ children }) {
+  const configured = getIsSupabaseConfigured()
   const [remote, setRemote] = useState([])
-  const [status, setStatus] = useState(isSupabaseConfigured ? 'loading' : 'static')
+  const [status, setStatus] = useState(configured ? 'loading' : 'static')
   const [error, setError] = useState(null)
 
   const refresh = useCallback(async () => {
-    if (!isSupabaseConfigured) {
+    if (!getIsSupabaseConfigured()) {
       setRemote([])
       setStatus('static')
       setError(null)
@@ -55,7 +56,7 @@ export function GalleryProvider({ children }) {
       status,
       error,
       refresh,
-      configured: isSupabaseConfigured,
+      configured: getIsSupabaseConfigured(),
     }),
     [items, remote, status, error, refresh],
   )
