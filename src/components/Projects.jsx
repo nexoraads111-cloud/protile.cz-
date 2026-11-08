@@ -7,23 +7,24 @@ import { photos } from '../photos'
 const FEATURED = [
   {
     id: 'feat-bath',
-    title: 'Koupelna — velkoformát',
-    meta: 'Obklady · vana · přesné spáry',
+    title: 'Koupelna — vana a velkoformát',
+    meta: 'Obklady · vana · tmavá dlažba',
     image: photos.services.bathroom,
     match: (g) => g.id === 'p21',
   },
   {
     id: 'feat-stone',
-    title: 'Sprcha — kámen',
-    meta: 'Mramorový obklad · niky',
+    title: 'Sprcha — šedý mramor a WC',
+    meta: 'Lineární žlab · velkoformát',
     image: photos.services.tiles,
     match: (g) => g.id === 'p12',
   },
   {
-    id: 'feat-floor',
-    title: 'Chodba — dlažba',
-    meta: 'Velkoformát · rovný povrch',
-    image: photos.services.stairs,
+    // feat-floor.jpg is a walk-in shower (same scene family as p18), not a hallway
+    id: 'feat-shower',
+    title: 'Sprcha — kout s lineárním žlabem',
+    meta: 'Velkoformát · příčky · revizní dvířka',
+    image: '/photos123/feat-floor.jpg',
     match: (g) => g.id === 'p18',
   },
 ]

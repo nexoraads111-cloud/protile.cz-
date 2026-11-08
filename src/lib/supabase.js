@@ -78,8 +78,11 @@ export const db = {
 export const GALLERY_BUCKET = 'gallery'
 
 export function publicGalleryUrl(storagePath) {
+  if (!storagePath) return ''
+  // External image URL saved from admin «Přidat z URL»
+  if (/^https?:\/\//i.test(storagePath)) return storagePath
   const c = resolve().client
-  if (!c || !storagePath) return ''
+  if (!c) return ''
   const { data } = c.storage.from(GALLERY_BUCKET).getPublicUrl(storagePath)
   return data?.publicUrl || ''
 }

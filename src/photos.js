@@ -1,61 +1,61 @@
 /** Client project photos from photos123/ — served via /photos123. */
 
+import { GALLERY_FILTERS } from './lib/gallery-category'
+
 const P = (n) => `/photos123/p${String(n).padStart(2, '0')}.jpg`
 
-export const CATEGORIES = [
-  { id: 'all', label: 'Vše' },
-  { id: 'koupelny', label: 'Koupelny' },
-  { id: 'obklady', label: 'Obklady' },
-  { id: 'kamen', label: 'Kámen / mramor' },
-  { id: 'schody', label: 'Dlažba / chodby' },
-]
+/** Filter chips for Realizace gallery (Vše + project types present in photos). */
+export const CATEGORIES = GALLERY_FILTERS
 
-/** Curated titles for photos123 set (real project documentation). */
+/**
+ * Curated Czech captions + categories for photos123 (matched to actual images).
+ * Categories: koupelny | obklady | dlazby
+ */
 const META = [
-  [1, 'koupelny', 'Koupelna — béžový velkoformát'],
-  [2, 'koupelny', 'Koupelna — roh a vana'],
-  [3, 'koupelny', 'Koupelna — obklad stěn'],
-  [4, 'kamen', 'Sprcha — mramorový obklad'],
-  [5, 'kamen', 'Sprcha — žíhaný kámen'],
-  [6, 'kamen', 'Sprcha — detail spár'],
-  [7, 'kamen', 'Sprcha — vestavěná nika'],
-  [8, 'kamen', 'Koupelna — kamenný obklad'],
-  [9, 'kamen', 'Sprcha — plošný obklad'],
-  [10, 'kamen', 'Sprcha — rohová spára'],
-  [11, 'kamen', 'Sprcha — podlaha a stěny'],
-  [12, 'kamen', 'Koupelna — šedý kámen'],
-  [13, 'kamen', 'Koupelna — detail kamene'],
-  [14, 'schody', 'Chodba — velkoformátová dlažba'],
-  [15, 'obklady', 'Dlažba — pokládka s křížky'],
-  [16, 'schody', 'Obývací prostor — dlažba'],
-  [17, 'koupelny', 'Koupelna — vana a obklad'],
-  [18, 'schody', 'Chodba — šedá dlažba'],
-  [19, 'koupelny', 'Sprcha — světlý obklad'],
-  [20, 'koupelny', 'Sprchy — dvojitá kabina'],
-  [21, 'koupelny', 'Koupelna — vana a stěny'],
-  [22, 'koupelny', 'Koupelna — tmavá dlažba'],
-  [23, 'koupelny', 'Koupelna — přechod stěna/podlaha'],
-  [24, 'koupelny', 'Koupelna — pohled shora'],
-  [25, 'koupelny', 'Sprcha — světlý interiér'],
-  [26, 'koupelny', 'WC — velkoformátový obklad'],
-  [27, 'koupelny', 'WC — nika a panel'],
-  [28, 'koupelny', 'Koupelna — mramorové stěny'],
-  [29, 'koupelny', 'Koupelna — příčka a vana'],
-  [30, 'koupelny', 'WC — rohový detail'],
-  [31, 'koupelny', 'WC — čelní pohled'],
-  [32, 'kamen', 'Sprcha — tmavý mramor'],
-  [33, 'kamen', 'Sprcha — leštěný kámen'],
-  [34, 'kamen', 'Sprcha — úzký prostor'],
-  [35, 'kamen', 'Sprcha — kamenná příčka'],
-  [36, 'koupelny', 'Koupelna — matný šedý obklad'],
-  [37, 'koupelny', 'Koupelna — vana a niky'],
-  [38, 'koupelny', 'Koupelna — čistý prostor'],
-  [39, 'koupelny', 'Koupelna — detail nik'],
-  [40, 'obklady', 'Obklad — přesné spáry'],
-  [41, 'obklady', 'Obklad — velkoformát'],
-  [42, 'schody', 'Dlažba — rovný povrch'],
-  [43, 'koupelny', 'Koupelna — finální linie'],
-  [44, 'obklady', 'Obklad — pracovní detail'],
+  [1, 'koupelny', 'Koupelna — béžový velkoformát a vana'],
+  [2, 'koupelny', 'Koupelna — sprchová vanička a obklad'],
+  [3, 'koupelny', 'WC — šedý velkoformát a Geberit'],
+  [4, 'koupelny', 'Koupelna — vana a béžový velkoformát'],
+  [5, 'koupelny', 'Koupelna — šedý mramorový velkoformát'],
+  [6, 'koupelny', 'Koupelna — šedý kamenný velkoformát'],
+  [7, 'koupelny', 'Koupelna — šedý mramor a rozvody'],
+  [8, 'koupelny', 'WC — šedý mramor a závěsné WC'],
+  [9, 'dlazby', 'Dlažba — chodba s vyrovnávacím systémem'],
+  [10, 'dlazby', 'Dlažba — pokládka v dlouhé chodbě'],
+  [11, 'dlazby', 'Dlažba — rozpracovaná pokládka'],
+  [12, 'koupelny', 'Koupelna — sprcha s lineárním žlabem'],
+  [13, 'dlazby', 'Dlažba — hotová šedá podlaha v chodbě'],
+  [14, 'dlazby', 'Dlažba — pokládka s nivelačními klíny'],
+  [15, 'dlazby', 'Dlažba — pokládka s laserem a křížky'],
+  [16, 'koupelny', 'Koupelna — obklad vany velkoformátem'],
+  [17, 'dlazby', 'Dlažba — šedá podlaha v chodbě'],
+  [18, 'koupelny', 'Sprcha — kout a příprava WC'],
+  [19, 'koupelny', 'Koupelna — sprchový kout a WC'],
+  [20, 'koupelny', 'Koupelna — vana a kombinovaný obklad'],
+  [21, 'koupelny', 'Koupelna — mramorový obklad a dlažba'],
+  [22, 'koupelny', 'Koupelna — vana a krémový velkoformát'],
+  [23, 'koupelny', 'Koupelna — kamenný velkoformát a WC'],
+  [24, 'koupelny', 'WC — velkoformátový obklad a dlažba'],
+  [25, 'koupelny', 'WC — příprava na závěsné WC'],
+  [26, 'koupelny', 'WC — alcova s podomítkovým systémem'],
+  [27, 'koupelny', 'Koupelna — obklad vany mramorem'],
+  [28, 'koupelny', 'Koupelna — světlý obklad a tmavá dlažba'],
+  [29, 'koupelny', 'WC — velkoformátový obklad'],
+  [30, 'koupelny', 'WC — béžovohnědý velkoformát'],
+  [31, 'koupelny', 'Sprcha — sprchové kouty v kamenném dekoru'],
+  [32, 'koupelny', 'Koupelna — mramorový velkoformát a příčka'],
+  [33, 'koupelny', 'WC — mramorový obklad s podomítkou'],
+  [34, 'koupelny', 'Koupelna — mramor, nika a příčka'],
+  [35, 'koupelny', 'Koupelna — antracitová vana a niky'],
+  [36, 'koupelny', 'Koupelna — šedý velkoformát a niky'],
+  [37, 'koupelny', 'Koupelna — tmavě šedý obklad a vana'],
+  [38, 'obklady', 'Obklad — precizní dořez u desky'],
+  [39, 'koupelny', 'Koupelna — antracit, vana a niky'],
+  [40, 'obklady', 'Obklad — kamenický vnější roh'],
+  [41, 'obklady', 'Obklad — miterovaný roh bez lišty'],
+  [42, 'koupelny', 'Koupelna — béžový obklad s vanou'],
+  [43, 'koupelny', 'Sprcha — pokládka dlažby s klíny'],
+  [44, 'koupelny', 'Koupelna — šedý velkoformát nad vanou'],
 ]
 
 /** Full gallery — every photos123 image */
@@ -75,7 +75,8 @@ export const photos = {
   services: {
     bathroom: '/photos123/feat-bath.jpg',
     tiles: '/photos123/feat-stone.jpg',
-    stairs: '/photos123/feat-floor.jpg',
+    // Real hallway/floor tiling — feat-floor.jpg is a shower, not stairs/terrace
+    stairs: P(15),
     facade: P(32),
     niche: P(26),
   },

@@ -5,7 +5,7 @@ import { useLightbox } from '../lightbox-context'
 const SERVICES = [
   { title: 'Obklady a dlažby', image: photos.services.tiles },
   { title: 'Koupelny', image: photos.services.bathroom },
-  { title: 'Terasy a schody', image: photos.services.stairs },
+  { title: 'Dlažby a chodby', image: photos.services.stairs },
 ]
 
 export default function Services() {
