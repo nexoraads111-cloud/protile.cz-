@@ -24,12 +24,12 @@ const META = [
   [10, 'dlazby', 'Dlažba — pokládka v dlouhé chodbě'],
   [11, 'dlazby', 'Dlažba — rozpracovaná pokládka'],
   [12, 'koupelny', 'Koupelna — sprcha s lineárním žlabem'],
-  [13, 'dlazby', 'Dlažba — hotová šedá podlaha'],
+  [13, 'dlazby', 'Dlažba — hotová šedá podlaha v chodbě'],
   [14, 'dlazby', 'Dlažba — pokládka s nivelačními klíny'],
   [15, 'dlazby', 'Dlažba — pokládka s laserem a křížky'],
   [16, 'koupelny', 'Koupelna — obklad vany velkoformátem'],
   [17, 'dlazby', 'Dlažba — šedá podlaha v chodbě'],
-  [18, 'koupelny', 'Koupelna — sprcha a příprava WC'],
+  [18, 'koupelny', 'Sprcha — kout a příprava WC'],
   [19, 'koupelny', 'Koupelna — sprchový kout a WC'],
   [20, 'koupelny', 'Koupelna — vana a kombinovaný obklad'],
   [21, 'koupelny', 'Koupelna — mramorový obklad a dlažba'],
@@ -42,7 +42,7 @@ const META = [
   [28, 'koupelny', 'Koupelna — světlý obklad a tmavá dlažba'],
   [29, 'koupelny', 'WC — velkoformátový obklad'],
   [30, 'koupelny', 'WC — béžovohnědý velkoformát'],
-  [31, 'koupelny', 'Koupelna — sprchové kouty v kamenném dekoru'],
+  [31, 'koupelny', 'Sprcha — sprchové kouty v kamenném dekoru'],
   [32, 'koupelny', 'Koupelna — mramorový velkoformát a příčka'],
   [33, 'koupelny', 'WC — mramorový obklad s podomítkou'],
   [34, 'koupelny', 'Koupelna — mramor, nika a příčka'],
@@ -54,7 +54,7 @@ const META = [
   [40, 'obklady', 'Obklad — kamenický vnější roh'],
   [41, 'obklady', 'Obklad — miterovaný roh bez lišty'],
   [42, 'koupelny', 'Koupelna — béžový obklad s vanou'],
-  [43, 'koupelny', 'Koupelna — pokládka dlažby s klíny'],
+  [43, 'koupelny', 'Sprcha — pokládka dlažby s klíny'],
   [44, 'koupelny', 'Koupelna — šedý velkoformát nad vanou'],
 ]
 
@@ -75,7 +75,8 @@ export const photos = {
   services: {
     bathroom: '/photos123/feat-bath.jpg',
     tiles: '/photos123/feat-stone.jpg',
-    stairs: '/photos123/feat-floor.jpg',
+    // Real hallway/floor tiling — feat-floor.jpg is a shower, not stairs/terrace
+    stairs: P(15),
     facade: P(32),
     niche: P(26),
   },
