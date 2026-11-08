@@ -68,6 +68,8 @@
     if (!storagePath) return ''
     // External image URL saved from admin «Přidat z URL»
     if (/^https?:\/\//i.test(storagePath)) return storagePath
+    // Seeded static site assets (e.g. /photos123/p01.jpg)
+    if (String(storagePath).startsWith('/')) return storagePath
     if (!db) return ''
     const { data } = db.storage.from(GALLERY_BUCKET).getPublicUrl(storagePath)
     return data?.publicUrl || ''
@@ -75,6 +77,13 @@
 
   function isExternalUrl(path) {
     return /^https?:\/\//i.test(String(path || ''))
+  }
+
+  /** True only for objects in the gallery Storage bucket (not site paths / URLs). */
+  function isStorageObjectPath(path) {
+    const p = String(path || '')
+    if (!p || isExternalUrl(p) || p.startsWith('/')) return false
+    return true
   }
 
   const CATEGORY_IDS = ['koupelny', 'obklady', 'dlazby']
@@ -94,18 +103,27 @@
 
   async function fetchGalleryImages() {
     if (!db) throw new Error('Supabase není nakonfigurován (chybí URL/klíč nebo CDN).')
-    const { data, error } = await db
-      .from('gallery_images')
-      .select('*')
-      .order('created_at', { ascending: false })
+    let query = db.from('gallery_images').select('*')
+    // Prefer sort_order when column exists; fall back if schema is older
+    let { data, error } = await query.order('sort_order', { ascending: true }).order('created_at', {
+      ascending: false,
+    })
+    if (error && /sort_order/i.test(error.message || '')) {
+      ;({ data, error } = await db
+        .from('gallery_images')
+        .select('*')
+        .order('created_at', { ascending: false }))
+    }
     if (error) throw error
     return (data || []).map((row) => ({
       id: row.id,
       storagePath: row.storage_path,
       alt: row.alt_text || 'Fotografie realizace',
       category: resolveCategory(row),
+      sortOrder: row.sort_order ?? 0,
       createdAt: row.created_at,
       url: publicUrl(row.storage_path),
+      isStaticSeed: String(row.storage_path || '').startsWith('/photos123/'),
     }))
   }
 
@@ -166,8 +184,13 @@
       storage_path: path,
       alt_text: (altText || '').trim() || normalized.name,
       category: cat,
+      sort_order: 0,
     }
     let { error: rowError } = await db.from('gallery_images').insert(row)
+    if (rowError && /sort_order/i.test(rowError.message || '')) {
+      delete row.sort_order
+      ;({ error: rowError } = await db.from('gallery_images').insert(row))
+    }
     if (rowError && /category/i.test(rowError.message || '')) {
       delete row.category
       ;({ error: rowError } = await db.from('gallery_images').insert(row))
@@ -191,13 +214,69 @@
         throw delRow
       }
     }
-    // External URL rows have no Storage object
-    if (path && !isExternalUrl(path)) {
+    // Only remove Storage objects (not site-relative / external URLs)
+    if (path && isStorageObjectPath(path)) {
       const { error: delFile } = await db.storage.from(GALLERY_BUCKET).remove([path])
       if (delFile) {
         delFile.message = `Storage delete: ${formatError(delFile)}`
         throw delFile
       }
+    }
+  }
+
+  /**
+   * Replace image file for an existing row (keeps id / sort_order; optional new caption/category).
+   */
+  async function replaceImage(row, file, userId, altText, category) {
+    if (!db) throw new Error('Supabase není nakonfigurován.')
+    if (!row?.id) throw new Error('Chybí id fotografie.')
+    if (!userId) throw new Error('Chybí user id — nejste přihlášeni.')
+
+    const normalized = normalizeFile(file)
+    const ext = ALLOWED_TYPES[normalized.type]
+    if (!ext) throw new Error(`Nepodporovaný typ: ${normalized.type || 'neznámý'}`)
+
+    const newPath = `${userId}/${uuidv4()}.${ext}`
+    const { error: uploadError } = await db.storage.from(GALLERY_BUCKET).upload(newPath, normalized, {
+      contentType: normalized.type,
+      upsert: false,
+    })
+    if (uploadError) {
+      uploadError.message = `Storage: ${formatError(uploadError)}`
+      throw uploadError
+    }
+
+    const patch = {
+      storage_path: newPath,
+    }
+    if (altText != null && String(altText).trim()) patch.alt_text = String(altText).trim()
+    if (category) patch.category = resolveCategory({ category, alt_text: altText })
+
+    const { error: updError } = await db.from('gallery_images').update(patch).eq('id', row.id)
+    if (updError) {
+      await db.storage.from(GALLERY_BUCKET).remove([newPath])
+      updError.message = `DB update: ${formatError(updError)}`
+      throw updError
+    }
+
+    const oldPath = row.storagePath || row.storage_path
+    if (oldPath && isStorageObjectPath(oldPath) && oldPath !== newPath) {
+      await db.storage.from(GALLERY_BUCKET).remove([oldPath])
+    }
+    return newPath
+  }
+
+  async function updateImageMeta(row, { altText, category } = {}) {
+    if (!db) throw new Error('Supabase není nakonfigurován.')
+    if (!row?.id) throw new Error('Chybí id fotografie.')
+    const patch = {}
+    if (altText != null) patch.alt_text = String(altText).trim()
+    if (category) patch.category = resolveCategory({ category, alt_text: altText })
+    if (!Object.keys(patch).length) return
+    const { error } = await db.from('gallery_images').update(patch).eq('id', row.id)
+    if (error) {
+      error.message = `DB update: ${formatError(error)}`
+      throw error
     }
   }
 
@@ -266,11 +345,14 @@
     formatError,
     publicUrl,
     isExternalUrl,
+    isStorageObjectPath,
     resolveCategory,
     fetchGalleryImages,
     validateFiles,
     uploadOne,
     addFromUrl,
     deleteImage,
+    replaceImage,
+    updateImageMeta,
   }
 })(window)

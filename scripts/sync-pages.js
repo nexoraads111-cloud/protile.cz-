@@ -135,6 +135,7 @@ for (const file of [
   'js/supabase-config.example.js',
   'js/supabase-config.js',
   'js/supabase-client.js',
+  'js/gallery-seed.js',
   'js/public-gallery.js',
   'js/admin.js',
 ]) {

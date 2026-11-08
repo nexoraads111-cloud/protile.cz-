@@ -37,10 +37,11 @@ Use the **anon / publishable** key only. Never put `service_role` in these files
 ## 2. Supabase dashboard — step by step
 
 ### A. Apply SQL
-1. Open [Supabase Dashboard](https://supabase.com/dashboard) → project `vxitorpldzfwtexzswde`
+1. Open [Supabase Dashboard](https://supabase.com/dashboard) → project `vmqggaksvweiyhevgebs`
 2. **SQL Editor** → New query  
 3. Paste contents of `supabase/setup.sql` → **Run**  
-   Creates/updates: `gallery_images`, public bucket `gallery` (5 MB, jpeg/png/webp), RLS + storage policies.
+   Creates/updates: `gallery_images` (+ `sort_order`), public bucket `gallery`, RLS, storage policies, and **seeds all 44 live photos123** captions/categories.
+4. Or with a PAT: `export SUPABASE_ACCESS_TOKEN=sbp_… && ./scripts/apply-gallery-sql.sh`
 
 **If upload fails with** `gallery_images` **RLS / 42501:** run `supabase/fix-gallery-images-rls.sql` (drops all table policies, grants SELECT to public + INSERT/DELETE to authenticated).
 

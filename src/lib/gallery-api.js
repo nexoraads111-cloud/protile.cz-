@@ -24,6 +24,7 @@ export async function fetchRemoteGallery() {
   const { data, error } = await db
     .from('gallery_images')
     .select('*')
+    .order('sort_order', { ascending: true })
     .order('created_at', { ascending: false })
 
   if (error) {
@@ -42,6 +43,7 @@ export async function fetchRemoteGallery() {
         category: resolveGalleryCategory(photo),
         source: 'supabase',
         storagePath: photo.storage_path,
+        sortOrder: photo.sort_order ?? 0,
       }
     })
     .filter(Boolean)

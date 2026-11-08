@@ -81,6 +81,8 @@ export function publicGalleryUrl(storagePath) {
   if (!storagePath) return ''
   // External image URL saved from admin «Přidat z URL»
   if (/^https?:\/\//i.test(storagePath)) return storagePath
+  // Seeded static site assets (e.g. /photos123/p01.jpg) — served from Pages, not Storage
+  if (String(storagePath).startsWith('/')) return storagePath
   const c = resolve().client
   if (!c) return ''
   const { data } = c.storage.from(GALLERY_BUCKET).getPublicUrl(storagePath)

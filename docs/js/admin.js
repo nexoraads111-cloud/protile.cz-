@@ -9,6 +9,7 @@
   const userLine = $('#user-line')
   const emptyEl = $('#list-empty')
   const cfgMissing = $('#config-missing')
+  const listCount = $('#list-count')
 
   let activeSource = 'file'
 
@@ -55,10 +56,29 @@
   })
   setSource('file')
 
+  let listMode = 'live' // live | seed-fallback
+
   async function refreshList() {
     try {
-      const rows = await api.fetchGalleryImages()
+      let rows
+      try {
+        rows = await api.fetchGalleryImages()
+        listMode = 'live'
+      } catch (err) {
+        const detail = api.formatError ? api.formatError(err) : err?.message || String(err)
+        if (/PGRST205|gallery_images|schema cache/i.test(detail)) {
+          rows = Array.isArray(window.PROTILE_GALLERY_SEED) ? window.PROTILE_GALLERY_SEED : []
+          listMode = 'seed-fallback'
+          message(
+            'Tabulka gallery_images ještě neexistuje (PGRST205). Zobrazuji seed portfolia — spusťte supabase/setup.sql v Supabase SQL Editor, pak Obnovit. Mazání/nahrazení až po SQL.',
+            'error',
+          )
+        } else {
+          throw err
+        }
+      }
       thumbs.replaceChildren()
+      if (listCount) listCount.textContent = rows.length ? `${rows.length} fotografií` : ''
       if (!rows.length) {
         emptyEl?.classList.remove('hidden')
         return
@@ -77,13 +97,31 @@
           }[row.category] ||
           row.category ||
           'Obklady'
-        const external = api.isExternalUrl?.(row.storagePath)
+        const badge = row.isStaticSeed ? ' · web' : api.isExternalUrl?.(row.storagePath) ? ' · odkaz' : ''
         fig.innerHTML = `
           <img src="${escapeAttr(row.url)}" alt="${escapeAttr(row.alt)}" loading="lazy" />
           <figcaption>
-            <span>${escapeHtml(row.alt)}</span>
-            <span class="thumb-cat">${escapeHtml(catLabel)}${external ? ' · odkaz' : ''}</span>
-            <button type="button" class="btn btn-danger" data-id="${escapeAttr(row.id)}" data-path="${escapeAttr(row.storagePath)}">Smazat</button>
+            <label class="thumb-edit">
+              Popis
+              <input type="text" class="thumb-alt" value="${escapeAttr(row.alt)}" data-id="${escapeAttr(row.id)}" maxlength="120" />
+            </label>
+            <label class="thumb-edit">
+              Kategorie
+              <select class="thumb-cat-select" data-id="${escapeAttr(row.id)}">
+                <option value="koupelny"${row.category === 'koupelny' ? ' selected' : ''}>Koupelny</option>
+                <option value="obklady"${row.category === 'obklady' ? ' selected' : ''}>Obklady</option>
+                <option value="dlazby"${row.category === 'dlazby' ? ' selected' : ''}>Dlažby</option>
+              </select>
+            </label>
+            <span class="thumb-cat">${escapeHtml(catLabel)}${badge}</span>
+            <div class="thumb-actions">
+              <label class="btn btn-outline thumb-replace${listMode === 'seed-fallback' ? ' is-disabled' : ''}">
+                Nahradit
+                <input type="file" accept="image/jpeg,image/png,image/webp" hidden data-replace-id="${escapeAttr(row.id)}" data-path="${escapeAttr(row.storagePath)}" ${listMode === 'seed-fallback' ? 'disabled' : ''} />
+              </label>
+              <button type="button" class="btn btn-outline" data-save-id="${escapeAttr(row.id)}" ${listMode === 'seed-fallback' ? 'disabled' : ''}>Uložit popis</button>
+              <button type="button" class="btn btn-danger" data-id="${escapeAttr(row.id)}" data-path="${escapeAttr(row.storagePath)}" ${listMode === 'seed-fallback' ? 'disabled' : ''}>Smazat</button>
+            </div>
           </figcaption>
         `
         thumbs.appendChild(fig)
@@ -92,6 +130,7 @@
       console.error(err)
       const detail = api.formatError ? api.formatError(err) : err?.message || String(err)
       message(`Nepodařilo se načíst seznam: ${detail}`, 'error')
+      if (listCount) listCount.textContent = ''
     }
   }
 
@@ -107,6 +146,7 @@
       appView.classList.add('hidden')
       loginView.classList.remove('hidden')
       thumbs.replaceChildren()
+      if (listCount) listCount.textContent = ''
     }
   }
 
@@ -201,21 +241,73 @@
   })
 
   thumbs?.addEventListener('click', async (e) => {
+    const saveBtn = e.target.closest('button[data-save-id]')
+    if (saveBtn) {
+      const id = saveBtn.getAttribute('data-save-id')
+      const fig = saveBtn.closest('figure')
+      const alt = fig?.querySelector('.thumb-alt')?.value || ''
+      const category = fig?.querySelector('.thumb-cat-select')?.value || 'koupelny'
+      saveBtn.disabled = true
+      try {
+        await api.updateImageMeta({ id }, { altText: alt, category })
+        message('Popis uložen.', 'ok')
+        await refreshList()
+      } catch (err) {
+        console.error(err)
+        message(`Uložení se nezdařilo: ${api.formatError?.(err) || err.message}`, 'error')
+        saveBtn.disabled = false
+      }
+      return
+    }
+
     const btn = e.target.closest('button[data-id]')
     if (!btn) return
     const id = btn.getAttribute('data-id')
     const storagePath = btn.getAttribute('data-path')
-    if (!confirm('Opravdu smazat tuto fotografii z galerie?')) return
+    if (!confirm('Opravdu smazat tuto fotografii z galerie na webu?')) return
     btn.disabled = true
     try {
       await api.deleteImage({ id, storagePath })
-      message('Fotografie smazána.', 'ok')
+      message('Fotografie smazána z webu.', 'ok')
       await refreshList()
     } catch (err) {
       console.error(err)
       const detail = api.formatError ? api.formatError(err) : err?.message || String(err)
       message(`Smazání se nezdařilo: ${detail}`, 'error')
       btn.disabled = false
+    }
+  })
+
+  thumbs?.addEventListener('change', async (e) => {
+    const input = e.target.closest('input[data-replace-id]')
+    if (!input || !input.files?.length) return
+    const { data } = await db.auth.getSession()
+    const user = data.session?.user
+    if (!user) {
+      message('Nejste přihlášeni.', 'error')
+      return
+    }
+    const id = input.getAttribute('data-replace-id')
+    const storagePath = input.getAttribute('data-path')
+    const fig = input.closest('figure')
+    const alt = fig?.querySelector('.thumb-alt')?.value
+    const category = fig?.querySelector('.thumb-cat-select')?.value
+    const check = api.validateFiles(input.files)
+    if (!check.ok) {
+      message(check.error, 'error')
+      input.value = ''
+      return
+    }
+    try {
+      message('Nahrazuji fotografii…', 'info')
+      await api.replaceImage({ id, storagePath }, check.files[0], user.id, alt, category)
+      message('Fotografie nahrazena.', 'ok')
+      await refreshList()
+    } catch (err) {
+      console.error(err)
+      message(`Nahrazení se nezdařilo: ${api.formatError?.(err) || err.message}`, 'error')
+    } finally {
+      input.value = ''
     }
   })
 
