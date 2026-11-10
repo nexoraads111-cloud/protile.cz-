@@ -31,6 +31,7 @@
 html {
   scroll-behavior: smooth;
   scroll-padding-top: var(--header-h);
+  overflow-x: clip;
 }
 
 body {
@@ -43,10 +44,12 @@ body {
   background: var(--surface);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+  overflow-x: clip;
 }
 
 body.nav-open {
   overflow: hidden;
+  touch-action: none;
 }
 
 img {
@@ -209,7 +212,8 @@ button {
 .site-header {
   position: sticky;
   top: 0;
-  z-index: 40;
+  /* Above mobile-nav backdrop (45) so the hamburger stays tappable to close */
+  z-index: 60;
   background: rgba(255, 255, 255, 0.86);
   backdrop-filter: blur(14px);
   border-bottom: 1px solid transparent;
@@ -925,25 +929,42 @@ button {
   position: fixed;
   inset: 0;
   z-index: 80;
-  display: grid;
-  place-items: center;
-  padding: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: max(0.75rem, env(safe-area-inset-top, 0px))
+    max(0.75rem, env(safe-area-inset-right, 0px))
+    max(0.75rem, env(safe-area-inset-bottom, 0px))
+    max(0.75rem, env(safe-area-inset-left, 0px));
   background: rgba(10, 10, 10, 0.45);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
 }
 
 .review-modal__panel {
   position: relative;
   width: min(100%, 440px);
+  max-height: min(100%, calc(100dvh - 1.5rem));
+  margin: auto;
   padding: 1.6rem;
   border-radius: var(--radius);
   background: var(--surface);
   box-shadow: 0 24px 60px rgba(0, 0, 0, 0.2);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
 }
 
 .review-modal__close {
   position: absolute;
-  top: 0.7rem;
-  right: 0.9rem;
+  top: 0.55rem;
+  right: 0.55rem;
+  z-index: 1;
+  width: 2.6rem;
+  height: 2.6rem;
+  display: inline-grid;
+  place-items: center;
   font-size: 1.5rem;
   color: var(--muted);
 }
@@ -952,6 +973,7 @@ button {
   font-size: 1.25rem;
   font-weight: 700;
   margin-bottom: 0.4rem;
+  padding-right: 2.2rem;
 }
 
 .review-modal__lead {
@@ -1143,13 +1165,23 @@ button {
   display: grid;
   place-items: center;
   background: rgba(8, 8, 8, 0.88);
-  padding: 1rem;
+  padding: max(1rem, env(safe-area-inset-top, 0px))
+    max(1rem, env(safe-area-inset-right, 0px))
+    max(1rem, env(safe-area-inset-bottom, 0px))
+    max(1rem, env(safe-area-inset-left, 0px));
+  overflow: auto;
+  overscroll-behavior: contain;
 }
 
 .lightbox__close {
   position: absolute;
-  top: 1rem;
-  right: 1.1rem;
+  top: max(0.75rem, env(safe-area-inset-top, 0px));
+  right: max(0.75rem, env(safe-area-inset-right, 0px));
+  z-index: 2;
+  width: 2.75rem;
+  height: 2.75rem;
+  display: inline-grid;
+  place-items: center;
   font-size: 2rem;
   color: var(--white);
 }
@@ -1158,6 +1190,7 @@ button {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
+  z-index: 2;
   width: 2.6rem;
   height: 2.6rem;
   border-radius: 50%;
@@ -1167,23 +1200,26 @@ button {
 }
 
 .lightbox__nav--prev {
-  left: 1rem;
+  left: max(0.5rem, env(safe-area-inset-left, 0px));
 }
 
 .lightbox__nav--next {
-  right: 1rem;
+  right: max(0.5rem, env(safe-area-inset-right, 0px));
 }
 
 .lightbox__figure {
   margin: 0;
   max-width: min(92vw, 980px);
+  width: 100%;
 }
 
 .lightbox__figure img {
-  max-height: 78vh;
+  max-height: min(78vh, 78dvh);
   width: auto;
+  max-width: 100%;
   margin-inline: auto;
   border-radius: 12px;
+  object-fit: contain;
 }
 
 .lightbox__figure figcaption {
@@ -1246,31 +1282,48 @@ button {
     background: rgba(0, 0, 0, 0.28);
     opacity: 0;
     pointer-events: none;
-    transition: opacity 0.25s;
+    visibility: hidden;
+    transition: opacity 0.25s, visibility 0.25s;
   }
 
   .mobile-nav-backdrop.is-open {
     opacity: 1;
     pointer-events: auto;
+    visibility: visible;
   }
 
   .mobile-nav {
-    display: block;
+    display: flex;
+    flex-direction: column;
     position: fixed;
     top: 0;
     right: 0;
+    bottom: 0;
     z-index: 50;
     width: min(86vw, 340px);
+    max-width: 100%;
     height: 100%;
-    padding: 5.5rem 1.4rem 1.5rem;
+    height: 100dvh;
+    max-height: 100dvh;
+    padding: max(5.5rem, calc(env(safe-area-inset-top, 0px) + 4.5rem))
+      max(1.4rem, env(safe-area-inset-right, 0px))
+      max(1.75rem, calc(env(safe-area-inset-bottom, 0px) + 1rem))
+      1.4rem;
     background: var(--surface);
     box-shadow: -12px 0 40px rgba(0, 0, 0, 0.12);
-    transform: translateX(105%);
-    transition: transform 0.3s var(--ease);
+    transform: translateX(100%);
+    visibility: hidden;
+    pointer-events: none;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+    transition: transform 0.3s var(--ease), visibility 0.3s;
   }
 
   .mobile-nav.is-open {
     transform: none;
+    visibility: visible;
+    pointer-events: auto;
   }
 
   .mobile-nav ul {
@@ -1288,9 +1341,13 @@ button {
   .mobile-nav__contact {
     display: grid;
     gap: 0.65rem;
-    margin-top: 1.5rem;
+    margin-top: auto;
     padding-top: 1.25rem;
     border-top: 1px solid var(--line);
+  }
+
+  .mobile-nav__contact .btn {
+    width: 100%;
   }
 
   .hero {
@@ -1375,6 +1432,62 @@ button {
 
   .project-card__media {
     aspect-ratio: 5 / 4;
+  }
+
+  .review-modal {
+    align-items: flex-end;
+    padding: 0;
+  }
+
+  .review-modal__panel {
+    width: 100%;
+    max-height: min(92dvh, calc(100% - env(safe-area-inset-top, 0px)));
+    border-radius: var(--radius) var(--radius) 0 0;
+    padding: 1.35rem 1.25rem calc(1.35rem + env(safe-area-inset-bottom, 0px));
+  }
+
+  .review-modal__actions {
+    position: sticky;
+    bottom: 0;
+    padding-top: 0.75rem;
+    background: linear-gradient(180deg, transparent, var(--surface) 28%);
+  }
+
+  .reviews__rating {
+    gap: 0.4rem 0.5rem;
+  }
+
+  .reviews__rating-opt {
+    min-height: 2.4rem;
+    padding: 0.3rem 0.4rem;
+    border-radius: 10px;
+    background: var(--surface-soft);
+  }
+
+  .review-modal__actions .btn {
+    flex: 1 1 auto;
+    min-height: 2.75rem;
+  }
+
+  .lightbox {
+    padding: max(3.25rem, calc(env(safe-area-inset-top, 0px) + 2.5rem))
+      0.5rem
+      max(1rem, env(safe-area-inset-bottom, 0px));
+  }
+
+  .lightbox__nav {
+    width: 2.35rem;
+    height: 2.35rem;
+  }
+
+  .lightbox__figure img {
+    max-height: min(68vh, 68dvh);
+  }
+
+  .lightbox__figure figcaption {
+    flex-wrap: wrap;
+    font-size: 0.82rem;
+    padding-inline: 0.35rem;
   }
 }
 

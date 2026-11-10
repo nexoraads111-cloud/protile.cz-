@@ -1,4 +1,5 @@
 import { useEffect, useId, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 import Logo from './Logo'
 import { company } from '../company'
 
@@ -36,14 +37,14 @@ export default function Header() {
   }, [])
 
   useEffect(() => {
-    const root = document.documentElement
+    // Class must live on <body> — CSS uses body.nav-open for scroll lock.
     if (open) {
-      root.classList.add('nav-open')
+      document.body.classList.add('nav-open')
       requestAnimationFrame(() => firstLinkRef.current?.focus())
     } else {
-      root.classList.remove('nav-open')
+      document.body.classList.remove('nav-open')
     }
-    return () => root.classList.remove('nav-open')
+    return () => document.body.classList.remove('nav-open')
   }, [open])
 
   useEffect(() => {
@@ -103,47 +104,58 @@ export default function Header() {
         </button>
       </div>
 
-      <button
-        type="button"
-        className={`mobile-nav-backdrop ${open ? 'is-open' : ''}`}
-        aria-label="Zavřít menu"
-        tabIndex={open ? 0 : -1}
-        onClick={close}
-      />
+      {typeof document !== 'undefined' &&
+        createPortal(
+          <>
+            <button
+              type="button"
+              className={`mobile-nav-backdrop ${open ? 'is-open' : ''}`}
+              aria-label="Zavřít menu"
+              tabIndex={open ? 0 : -1}
+              onClick={close}
+            />
 
-      <nav
-        id={navId}
-        className={`mobile-nav ${open ? 'is-open' : ''}`}
-        aria-label="Mobilní navigace"
-        aria-hidden={!open}
-        inert={!open ? true : undefined}
-      >
-        <ul>
-          {NAV.map((item, i) => (
-            <li key={item.id}>
-              <a
-                ref={i === 0 ? firstLinkRef : undefined}
-                href={`#${item.id}`}
-                onClick={close}
-                tabIndex={open ? 0 : -1}
-              >
-                {item.label}
-              </a>
-            </li>
-          ))}
-        </ul>
-        <div className="mobile-nav__contact">
-          <a href={`tel:${company.phoneLinks[0]}`} tabIndex={open ? 0 : -1}>
-            {company.phoneDisplay}
-          </a>
-          <a href={`mailto:${company.email}`} tabIndex={open ? 0 : -1}>
-            {company.email}
-          </a>
-          <a href="#kontakt" className="btn btn--dark btn--pill" onClick={close} tabIndex={open ? 0 : -1}>
-            Nezávazná konzultace
-          </a>
-        </div>
-      </nav>
+            <nav
+              id={navId}
+              className={`mobile-nav ${open ? 'is-open' : ''}`}
+              aria-label="Mobilní navigace"
+              aria-hidden={!open}
+              inert={!open ? true : undefined}
+            >
+              <ul>
+                {NAV.map((item, i) => (
+                  <li key={item.id}>
+                    <a
+                      ref={i === 0 ? firstLinkRef : undefined}
+                      href={`#${item.id}`}
+                      onClick={close}
+                      tabIndex={open ? 0 : -1}
+                    >
+                      {item.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+              <div className="mobile-nav__contact">
+                <a href={`tel:${company.phoneLinks[0]}`} tabIndex={open ? 0 : -1}>
+                  {company.phoneDisplay}
+                </a>
+                <a href={`mailto:${company.email}`} tabIndex={open ? 0 : -1}>
+                  {company.email}
+                </a>
+                <a
+                  href="#kontakt"
+                  className="btn btn--dark btn--pill"
+                  onClick={close}
+                  tabIndex={open ? 0 : -1}
+                >
+                  Nezávazná konzultace
+                </a>
+              </div>
+            </nav>
+          </>,
+          document.body,
+        )}
     </header>
   )
 }
