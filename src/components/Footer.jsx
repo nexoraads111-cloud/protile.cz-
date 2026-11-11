@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useInView } from '../hooks/useInView'
 import { company } from '../company'
+import { openGmailCompose } from '../lib/gmail-compose'
 import Logo from './Logo'
 
 export default function Footer() {
@@ -10,11 +11,11 @@ export default function Footer() {
 
   function onSubmit(e) {
     e.preventDefault()
-    const subject = encodeURIComponent(`Poptávka z webu — ${fields.name.trim()}`)
-    const body = encodeURIComponent(
-      `Jméno: ${fields.name.trim()}\nE-mail: ${fields.email.trim()}\n\n${fields.message.trim()}`,
-    )
-    window.location.href = `mailto:${company.email}?subject=${subject}&body=${body}`
+    openGmailCompose({
+      to: company.email,
+      subject: `Poptávka z webu — ${fields.name.trim()}`,
+      body: `Jméno: ${fields.name.trim()}\nE-mail: ${fields.email.trim()}\n\n${fields.message.trim()}`,
+    })
     setStatus('ok')
   }
 
@@ -96,7 +97,7 @@ export default function Footer() {
           </button>
           {status === 'ok' && (
             <p className="contact-form__msg" role="status">
-              Otevírá se e-mailový klient — zprávu stačí odeslat.
+              Otevírá se Gmail — zkontrolujte zprávu a odešlete.
             </p>
           )}
         </form>
