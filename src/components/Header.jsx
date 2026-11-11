@@ -123,6 +123,24 @@ export default function Header() {
               aria-label="Mobilní navigace"
               inert={!open ? true : undefined}
             >
+              <div className="mobile-menu__chrome">
+                <button
+                  type="button"
+                  className="mobile-menu__close"
+                  aria-label="Zavřít menu"
+                  tabIndex={open ? 0 : -1}
+                  onClick={() => {
+                    close()
+                    toggleRef.current?.focus()
+                  }}
+                >
+                  <span className="mobile-menu__close-x" aria-hidden="true">
+                    ×
+                  </span>
+                  <span className="mobile-menu__close-label">Zavřít</span>
+                </button>
+              </div>
+
               <div className="mobile-menu__top">
                 <p className="mobile-menu__eyebrow">Navigace</p>
                 <span className="mobile-menu__rule" aria-hidden="true" />
